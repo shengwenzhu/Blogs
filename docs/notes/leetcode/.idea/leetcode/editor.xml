@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="LeetcodeEditor">
+    <option name="projectConfig">
+      <map>
+        <entry key="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/2024_MaximizeTheConfusionOfAnExam.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/2024_MaximizeTheConfusionOfAnExam.java" />
+              <option name="questionId" value="2134" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N2024_MaximizeTheConfusionOfAnExam.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N2024_MaximizeTheConfusionOfAnExam.java" />
+              <option name="questionId" value="2134" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N2028_FindMissingObservations.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N2028_FindMissingObservations.java" />
+              <option name="questionId" value="2155" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N406_QueueReconstructionByHeight.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N406_QueueReconstructionByHeight.java" />
+              <option name="questionId" value="406" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N56_MergeIntervals.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N56_MergeIntervals.java" />
+              <option name="questionId" value="56" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N693_BinaryNumberWithAlternatingBits.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N693_BinaryNumberWithAlternatingBits.java" />
+              <option name="questionId" value="693" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
