@@ -87,8 +87,6 @@ Java存在三种类型的注释：
   javadoc -d F:\Blogs\docs\notes\Java\LearnJava\javadoc -encoding utf-8 -docencoding utf-8 -sourcepath F:\Blogs\docs\notes\Java\LearnJava\src\main\java -subpackages test
   ```
 
-
-
 # 二、数据类型
 
 Java是一门强类型语言，强类型包含两方面的含义：所有的变量必须先声明，后使用；指定类型的变量只能接收类型与之匹配的值。
@@ -148,8 +146,6 @@ Java提供了 4 种整型。
   ```java
   int num = 13_3281_0869;
   ```
-
-
 
 ### 2.1.2 浮点型
 
@@ -214,8 +210,6 @@ BigDecimal res2 = decimal3.subtract(decimal4);
 System.out.println(res2);     // 0.9
 ```
 
-
-
 ### 2.1.3 字符类型
 
 char 类型通常用于表示单个字符，占两个字节。
@@ -262,7 +256,6 @@ char sex2 = '\u7537';
       11100110 10110001 10001001
       ```
 
-    
 
 ### 2.1.4 布尔类型
 
@@ -271,8 +264,6 @@ boolean 类型有两种取值：true、false；
 > 在C++中，数值可以代替boolean值，如值 0 相当于布尔值 false ，非 0 值相当于布尔值 true，Java不支持这种机制。 
 
 > Java规范并没有强制指定boolean类型的变量所占用的内存空间，虽然boolean类型的变量或值只要1位即可保存，但由于大部分计算机在分配内存时允许的最小内存单元是字节，因此boolean类型的变量一般占用1个字节。
-
-
 
 ## 2.2 数值类型之间的转换
 
@@ -338,8 +329,6 @@ Java定义了如下的自动提升规则：
 Short num = 1;
 num = num + 1;	//报错，int无法转换为java.lang.Short，右侧表达式中num类型自动提升为int
 ```
-
-
 
 # 三、运算符
 
@@ -496,8 +485,6 @@ obj instance of class
 | 13           | 三目运算符                       |                    |
 | 14           | =、+=、-=、.......               | 赋值运算符         |
 
-
-
 # 四、流程控制
 
 不论是哪一种编程语言，都会提供两种基本的流程控制结构：分支结构和循环结构。其中分支结构用
@@ -584,8 +571,6 @@ Java提供了三种循环结构：while、do while、for。
   ```
 
 Java 提供了break语句和continue语句控制程序的循环结构，其中break语句用于结束循环，continue语句用于跳过本次循环。
-
-
 
 # 五、数组
 
