@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
  */
 public class PrimaryType {
     public static void main(String[] args) {
-        typeConversion();
+
     }
 
     public static String getType(Object a) {

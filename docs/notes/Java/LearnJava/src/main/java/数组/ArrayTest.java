@@ -11,10 +11,10 @@ import java.util.Random;
  */
 public class ArrayTest {
 
-    public static void main(String[] args) {
-
-        arrayToListTest();
-    }
+//    public static void main(String[] args) {
+//
+//        arrayToListTest();
+//    }
 
     /**
      * 排序性能测试

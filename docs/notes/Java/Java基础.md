@@ -26,15 +26,18 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.231-b11, mixed mode)
 
 ### 1）JDK8的新特性
 
++ 语言层面
+  + 增加了 Lambda 表达式和方法引用
+  + 为接口增加了默认方法（default method）
++ 集合方面
+  + 新增 Stream 库，用于对集合进行批量操作
+  + HashMap 性能改进
+
 > JDK8 官网文档：https://docs.oracle.com/javase/8/
 >
 > JDK8 API文档：https://docs.oracle.com/javase/8/docs/api/index.html
 >
 > JDK8 新特性：https://www.oracle.com/java/technologies/javase/8-whats-new.html
-
-+ Lambda 表达式
-+ 方法引用
-+ 默认方法（default method）
 
 ## 3. 程序注释
 
