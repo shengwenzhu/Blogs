@@ -2,6 +2,8 @@ package graph;
 
 import com.oracle.webservices.internal.api.databinding.DatabindingMode;
 
+import java.util.*;
+
 /**
  * 使用邻接链表实现图
  */
@@ -16,7 +18,7 @@ public class Graph {
     /**
      * 初始化底层顶点数组
      *
-     * @param numOfVertext 图时顶点个数
+     * @param numOfVertext 初始化数组大小
      */
     public Graph(int numOfVertext) {
         vertextNodes = new VertextNode[numOfVertext];
@@ -103,6 +105,88 @@ public class Graph {
         }
     }
 
+    // 标记顶点是否被访问过
+    private boolean[] marked;
+    // 记录从结点S到当前结点最短路径的上一个顶点
+    private int[] edgeTo;
+
+    /**
+     * 广度优先搜索
+     *
+     * @param s 开始结点对应的索引
+     */
+    public void bfs(int s) {
+        marked = new boolean[vertextSize];
+        edgeTo = new int[vertextSize];
+
+        Queue<Integer> queue = new LinkedList<>();
+        marked[s] = true;
+        queue.add(s);
+        while (!queue.isEmpty()) {
+            int temp = queue.remove();
+            AdjacencyNode node = vertextNodes[temp].getNode();
+            while (node != null) {
+                int adjvex = node.adjvex;
+                if (!marked[adjvex]) {
+                    queue.add(adjvex);
+                    marked[adjvex] = true;
+                    edgeTo[adjvex] = temp;
+                }
+                node = node.next;
+            }
+        }
+    }
+
+    /**
+     * 深度优先搜索
+     *
+     * @param s
+     */
+    public void depthFirstSearch(int s) {
+        marked = new boolean[vertextSize];
+        edgeTo = new int[vertextSize];
+        dfs(s);
+    }
+
+    private void dfs(int s) {
+        System.out.println(s);
+        marked[s] = true;
+        AdjacencyNode node = vertextNodes[s].getNode();
+        while (node != null) {
+            if (!marked[node.adjvex]) {
+                edgeTo[node.adjvex] = s;
+                dfs(node.adjvex);
+            }
+            node = node.next;
+        }
+    }
+
+    /**
+     * 判断顶点s到顶点v是否存在路径
+     *
+     * @param v
+     * @return
+     */
+    public boolean hasPathTo(int v) {
+        return marked[v];
+    }
+
+    /**
+     * 输出顶点s到顶点v的路径
+     *
+     * @param v
+     * @param s
+     */
+    public void pathTo(int s, int v) {
+        if (marked[v]) {
+            Deque<Integer> path = new ArrayDeque<>();
+            for (int i = v; i != s; i = edgeTo[i]) {
+                path.push(i);
+            }
+            System.out.println(s + " to " + v + ": " + path.toString());
+        }
+    }
+
     public static void main(String[] args) {
         Graph graph = new Graph(10);
         graph.insertVertext(1);
@@ -121,7 +205,10 @@ public class Graph {
         graph.insertEdge(3, 5);
         graph.insertEdge(4, 5);
 
-
+        graph.depthFirstSearch(0);
+        for (int i = 1; i < graph.vertextSize; i++) {
+            graph.pathTo(0, i);
+        }
     }
 
 }
