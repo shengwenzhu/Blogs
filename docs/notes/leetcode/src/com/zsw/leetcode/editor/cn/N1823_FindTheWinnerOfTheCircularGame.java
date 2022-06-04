@@ -10,6 +10,11 @@ public class N1823_FindTheWinnerOfTheCircularGame {
 
     //leetcode submit region begin(Prohibit modification and deletion)
     class Solution {
+        /**
+         * @param n  初始时n个人
+         * @param k  第k个人游戏出局
+         * @return
+         */
         public int findTheWinner(int n, int k) {
             Queue<Integer> queue = new ArrayDeque<>();
             for (int i = 1; i <= n; i++) {

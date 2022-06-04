@@ -123,6 +123,14 @@
             </LeetcodeEditor>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N6_ZigzagConversion.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N6_ZigzagConversion.java" />
+              <option name="questionId" value="6" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N837_New21Game.java">
           <value>
             <LeetcodeEditor>
@@ -152,6 +160,14 @@
             <LeetcodeEditor>
               <option name="path" value="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N908_SmallestRangeI.java" />
               <option name="questionId" value="944" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N953_VerifyingAnAlienDictionary.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/com/zsw/leetcode/editor/cn/N953_VerifyingAnAlienDictionary.java" />
+              <option name="questionId" value="990" />
             </LeetcodeEditor>
           </value>
         </entry>
