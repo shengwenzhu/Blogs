@@ -1,6 +1,87 @@
-# 特别备注
+# 备注
 
-+ 如果对某条命令不熟悉，可以在命令行窗口输入`git命令 -h` 查询命令的详细用法和各种选项的含义。
++ 查看命令帮助信息（查询命令的详细用法和各种选项的含义）
+
+  ```bash
+  $ git push -h
+  usage: git push [<options>] [<repository> [<refspec>...]]
+  
+      -v, --verbose         be more verbose
+      -q, --quiet           be more quiet
+      --repo <repository>   repository
+      ...
+  ```
+
+  
+
+# git push
+
+用于将本地分支的更新推送到远程主机并合并。
+
+```bash
+# 命令格式
+git push <远程主机名> <本地分支名>:<远程分支名>
+# 如果本地分支名与远程分支名相同，则可以省略冒号和远程分支名
+git push <远程主机名> <本地分支名>
+```
+
+命令示例如下：
+
+```bash
+# 将本地的master分支推送到origin主机的master分支（注：如果origin主机不存在master分支，会新建该分支）
+$ git push origin master
+
+# 省略本地分支名时表示删除origin主机的master分支
+$ git push origin :master
+# 注：该命令等同于 “git push origin --delete master”
+
+# 将“当前分支”推送到远程主机时，如果当前分支与远程分支之间存在“追踪关系”，则本地分支和远程分支都可以省略
+$ git push origin
+# 如果当前分支只有一个追踪分支，那么主机名都可以省略
+$ git push
+# 如果当前分支与多个主机存在追踪关系，则可以使用“-u选项”指定一个默认主机，这样之后就可以不加任何参数使用git push
+$ git push -u origin master
+```
+
+常见报错：
+
++ **问题1：本地仓库版本落后于远程仓库**
+
+  ```bash
+  ! [rejected] main -> main (non-fast-forward)
+  error: failed to push some refs to 'xxx'
+  hint: Updates were rejected because the tip of your current branch is behind its remote counterpart. Integrate the remote changes (e.g. 'git pull ...') before pushing again.
+  ```
+
+  解决方案：
+
+  + 方案一：使用 ”git pull“ 命令同步远程仓库到本地仓库
+
+    ```
+    git pull origin master
+    ```
+
+  + 方案二：使用 ”--force“ 选项强制推送
+
+    ```bash
+    git push origin master --force
+    ```
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # git init
 
