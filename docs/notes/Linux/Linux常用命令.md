@@ -1,64 +1,121 @@
 # 特别备注
 
 + 学习方式
-  + 《Linux命令行大全》：https://weread.qq.com/web/reader/f5c32ac072287278f5cc0e6kc81322c012c81e728d9d180
-
+  
++ 《Linux命令行大全》
+  
+    > https://weread.qq.com/web/reader/f5c32ac072287278f5cc0e6kc81322c012c81e728d9d180
+  
 + **shell与终端**
 
-  + Shell是一个程序，它接收由键盘输入的命令并将其传递给操作系统执行，几乎所有的Linux发行版都提供了来自GNU项目的Shell程序Bash。
+  + Shell 是一个程序，它接收由键盘输入的命令并将其传递给操作系统执行，几乎所有的 Linux 发行版都提供了来自 GNU 项目的 Shell 程序 Bash。
   + 当使用图形用户界面时，使用终端仿真器（简称终端）与Shell进行交互。
 
-+ Linux中的命令是区分大小写的。
++ <span style = "color:red;font-weight:bold">Linux 中的命令是区分大小写的。</span>
 
 + 命令选项
 
-  + 短选项：单个字符前加上连字符，如`ls -l`
+  + 短选项：单个字符前加上单个连字符，如`ls -l`
   + 长选项：在单词前加两个连字符
 
 + 命令行操作技巧
 
   + 使用鼠标，双击可以复制，单击中键可以将其粘贴到命令中。
 
-# 一、了解命令信息
 
-## 1. type——显示命令类型
+
+# 一、获取命令帮助信息
+
+## type：显示命令类型
 
 ```bash
-命令格式：type command [command ...]
-
-# 示例
-# type命令是Shell中的内建命令
-zhu@ubuntu:~$ type type
-type is a shell builtin
-# ls命令是在其他命令的基础上定义的命令
-zhu@ubuntu:~$ type ls
-ls is aliased to `ls --color=auto'
-# cp命令是一个可执行程序
-zhu@ubuntu:~$ type cp
-cp is /bin/cp
+# 命令格式
+type command [command ...]
 ```
 
-## 2. which——显示可执行文件的位置
-
-which命令只适用于可执行程序
+> Linux 中的命令可以分为以下几种：
+>
+> + 可执行程序：如 /usr/bin 中的文件
+> + Shell 中的内建命令
+> + Shell 函数
+> + 别名（在其他命令的基础上自定义的命令）
 
 ```bash
+# 命令示例
+zhu@ubuntu:~$ type type
+type is a shell builtin		# type是一个shell内建命令
+zhu@ubuntu:~$ type ls
+ls is aliased to `ls --color=auto`	# ls是其他命令的别名 	
+zhu@ubuntu:~$ type cp
+cp is /bin/cp		# cp命令是一个可执行程序，其位置在/bin/cp
+```
+
+## which：显示可执行文件的位置
+
+> 只能用于可执行文件的位置查找
+
+```bash
+# 命令格式
+which command
+```
+
+```bash
+# 命令示例
 zhu@ubuntu:~$ which ls
 /bin/ls
 ```
 
-## 3. help——获取命令帮助信息
+## help：获取Shell内建命令帮助信息
 
 ```bash
-方式一：获取Shell内建命令的帮助信息
+# 命令格式
 help command
+```
 
-方式二：显示命令所支持的语法和选项的相关描述
+```bash
+# 命令示例
+zhu@ubuntu:/$ help cd
+cd: cd [-L|[-P [-e]] [-@]] [dir]
+    Change the shell working directory.
+    
+    Change the current directory to DIR.  The default DIR is the value of the
+    HOME shell variable.
+    
+    ......
+```
+
+## --help选项：显示命令帮助信息
+
+```bash
+# 命令格式
 command --help
-	
-方式三：获取命令的使用手册
+```
+
+## man：显示命令手册页
+
+Linux 中大多数命令会提供一份命令的正式文档
+
+```bash
+# 命令格式
 man command
 ```
+
+## whatis：显示命令的简述
+
+```bash
+# 命令格式
+whatis command 
+```
+
+```bash
+# 命令示例
+zhu@ubuntu:/$ whatis mv
+mv (1)               - move (rename) files
+zhu@ubuntu:/$ whatis ls
+ls (1)               - list directory contents
+```
+
+
 
 # 二、文件系统导航
 
@@ -111,6 +168,8 @@ cd		# 将当前工作目录更改为用户主目录
 cd -	# 将当前工作目录切换回上一个工作目录
 cd ~user_name		# 将当前工作目录切为用户user_name的主目录
 ```
+
+
 
 # 三、文件
 
@@ -220,6 +279,74 @@ ln -s item LINK_NAME
 
 
 # 四、I/O重定向
+
+I/O：即输入输出
+
+标准输入：程序在运行过程中一般从标准输入获取输入，默认情况下标准输入与键盘相关联。
+
+标准输出：程序在运行过程中将运行结果发送到标准输出，默认情况下标准输出与显示器屏幕相关联，不会保存为磁盘文件。
+
+标准错误：程序运行过程中产生的错误信息发送到标准错误，默认情况下标准错误与显示器屏幕相关联。
+
+I/O重定向：改变输入的来源（不从键盘输入）和输出的位置（不输出到屏幕）。
+
+## 1. 标准输出重定向 
+
+重定向操作符：`>`
+
+```bash
+# 命令示例
+zhu@ubuntu:~$ ls -l > ls-output.txt
+# 将命令`ls -l`的输出结果存储到ls-output.txt文件中
+# 如果ls-output.txt文件不存在，会新建该文件
+# 如果ls-output.txt文件已存在，会覆盖已有文件内容
+```
+
+将输出追加到文件末尾（不覆盖已有内容），使用重定向操作符：`>>`
+
+## 2. 标准错误重定向
+
+不存在专门的重定向操作符。
+
+标准错误重定向需要使用文件描述符，shell 使用文件描述符0、1、2 分别表示标准输入、标准输出、标准错误。
+
+```bash
+# 命令示例
+zhu@ubuntu:~$ ls -l /test 2> ls-error.txt
+# 注：文件描述符2紧靠在重定向操作符之前，将标准错误重定向到ls-error.txt文件
+```
+
+将标准输出和标准错误重定向到一个文件中：
+
+```bash
+# 旧版本
+ls -l /test > ls-output.txt 2>&1
+# 注：标准错误的重定向操作必须在标准输出重定向之后
+
+# 新版本
+ls -l /test &> ls-output.txt
+```
+
+丢弃不需要的输出结果：将输出结果重定向到 `/dev/null`  的特殊文件
+
+```bash
+ls -l /test 2> /dev/null
+```
+
+## 3. 标准输入重定向
+
+标准输入重定向：从磁盘文件中获取输入。
+
+### cat：在标准输出上显示文件内容
+
+读取一个或多个文件，拼接后显示在标准输出（常用于显示短文本文件）。
+
+```bash
+# 命令示例
+zhu@ubuntu:~$ cat shige.txt 
+他日若遂凌云志
+敢笑黄巢不丈夫
+```
 
 
 

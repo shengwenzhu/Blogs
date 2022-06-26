@@ -102,7 +102,7 @@
 
 + 方式一：点击如下按键
 
-![](image/启动mybatis-generator插件.JPG)
+  ![](image/启动mybatis-generator插件.JPG)
 
 
 
@@ -112,3 +112,6 @@
 
   ![](image/IDEA配置自动生成MyBatis映射文件.png)
 
+## 方式二：IDEA中安装better-mybatis-generator插件
+
+> 在插件库 https://plugins.jetbrains.com/ 中搜索 better-mybatis-generator 插件

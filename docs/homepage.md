@@ -7,9 +7,11 @@
 
 # MyBatis
 
-+ [IDEA配置自动生成MyBatis映射文件](notes/MyBatis/IDEA配置自动生成MyBatis映射文件.md)
++ [MyBatis 原理](notes/MyBatis/MyBatis原理.md)
++ [创建 MyBatis 项目（不使用 Spring 框架）](notes/MyBatis/创建MyBatis项目.md)
 
 + [SpringBoot 项目整合MyBatis](notes/MyBatis/SpringBoot项目整合MyBatis.md)
++ [IDEA配置自动生成MyBatis映射文件](notes/MyBatis/IDEA配置自动生成MyBatis映射文件.md)
 
 
 
@@ -24,6 +26,12 @@
 + [图算法](notes/算法/图算法.md)
 + 其他算法
   + [蓄水池抽样](notes/算法/蓄水池抽样.md)
+
+
+
+# Linux
+
++ [Linux 常用命令](notes/Linux/Linux常用命令.md)
 
 
 
