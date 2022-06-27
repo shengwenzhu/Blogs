@@ -4,7 +4,7 @@ Spring MVC 基于模型-视图-控制器（Model-View-Controller，MVC）模式�
 
 ## 1. Spring MVC 处理 Web 请求过程
 
-![](image/Spring MVC 处理 Web 请求过程.JPG)
+![](image/SpringMVC处理Web请求过程.JPG)
 
 1.  Spring MVC 所有的请求首先都到达 `DispatcherServlet` ；
 
