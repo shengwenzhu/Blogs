@@ -5,6 +5,21 @@
 
 
 
+# MySQL
+
+> + 学习资料
+>
+>   官方文档：https://dev.mysql.com/doc/refman/5.7/en/
+>
+>   MySql 5.7 中文文档：https://www.docs4dev.com/docs/zh/mysql/5.7/reference/#
+>
+>   《高性能MySql》第3版
+
++ [MySQL 数据类型](notes/MySQL/MySQL数据类型.md)
++ [MySQL 必知必会](notes/MySQL/MySQL必知必会.md)
+
+
+
 # MyBatis
 
 + [MyBatis 原理](notes/MyBatis/MyBatis原理.md)
@@ -27,7 +42,8 @@
 
 # 系统架构
 
-随着手机、平板电脑等移动终端的广泛应用，现如今己经是移动互联网的时代。移动互联网的特点是面向大众，相对而言业务比较简单，但是网站往往拥有大量的用户，面对的问题主要是大数据、高并发、高性能问题。
+> 随着手机、平板电脑等移动终端的广泛应用，现如今己经是移动互联网的时代。移动互联网的特点是面向大众，相对而言业务比较简单，但是网站往往拥有大量的用户，面对的问题主要是大数据、高并发、高性能问题。
+>
 
 
 
