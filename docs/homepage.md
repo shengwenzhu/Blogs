@@ -6,10 +6,10 @@
   + [内部类](notes/Java/内部类.md)
   + [枚举类](notes/Java/枚举类.md)
   + [对象序列化](notes/Java/对象序列化.md)
-+ [集合](notes/Java/Java集合.md)
++ 集合
 + Java8 新增的 stream 库
 + 泛型
-+ [异常捕获与处理](notes/Java/异常捕获与处理.md)
++ 异常捕获与处理
 + [反射](notes/Java/反射.md)
 + Java 常用类
   + [String、StringBuffer、StringBuilder](notes/Java/常用类与接口/String.md)
