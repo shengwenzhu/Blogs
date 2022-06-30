@@ -23,6 +23,17 @@
 
 
 
+# JVM
+
++ [JAVA内存区域](notes/JVM/JAVA内存区域.md)
++ [HotSpot虚拟机对象](notes/JVM/HotSpot虚拟机对象.md)
++ [垃圾收集](notes/JVM/垃圾收集.md)
++ [类加载机制](notes/JVM/类加载机制.md)
++ [JVM 性能监控与故障处理工具](notes/JVM/JVM 性能监控与故障处理工具.md)
++ [虚拟机参数设置](notes/JVM/虚拟机参数设置.md)
+
+
+
 # Redis
 
 > 源码版本：redis-6.2.5
