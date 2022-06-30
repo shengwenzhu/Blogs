@@ -1,197 +1,939 @@
+# 特别备注
+
++ 可以使用 **`help 命令`** 查询命令的详细信息；
 
 
 
+# 一、SQL 语句分类
+
++ DDL：数据定义语言
+
+  > 用于定义数据库对象，如数据库、表等
+
++ DCL：数据控制语言
+
+  > 用于创建数据库用户、控制数据库的访问权限
+
++ DML：数据操纵语言
+
+  > 用于对数据库表中的数据进行增删改
+
++ DQL：数据查询语言
+
+  > 用于查询数据库中表的记录
 
 
 
-
-
-
-
-
-## 2. SQL 语句分类
-
-DDL：数据定义语言；
-		创建数据库中的各种对象-----表、视图、索引、同义词、聚簇等；
-
-DCL：数据控制语言；
-
-​		授予访问数据库的权限，控制事务的提交或回滚；
-
-DML：数据操纵语言；增删改查操作；
-
-## 3. MySQL 服务器
+# 二、MySQL 服务器
 
 ```mysql
--- 启动 MySQL服务器  
+-- 启动MySQL服务器  
 	net start mysql
--- 连接 MySQL服务器
-	mysql -h 地址 -P 端口 -u 用户名 -p 密码
--- 显示运行的线程  
+	
+-- 连接MySQL服务器
+	mysql -h 地址 -P 端口 -u 用户名 -p密码
+	
+-- 显示MySQL运行的线程  
 	SHOW PROCESSLIST;
--- 显示系统变量信息
-	SHOW VARIABLES;
+	
+-- 查询MySQL系统变量
+	SHOW [GLOBAL | SESSION] VARIABLES LIKE '系统变量名';
+	-- 示例
+	SHOW VARIABLES LIKE 'innodb_data_file_path';
 ```
 
-## 4. 数据库操作
+
+
+# 三、数据库相关操作
+
++ 创建数据库
+
+  ```mysql
+  -- 语法格式
+  CREATE DATABASE [IF NOT EXISTS] db_name [数据库选项]
+  
+  -- 数据库选项：
+  	[DEFAULT] {
+          CHARACTER SET [=] charset_name
+        | COLLATE [=] collation_name
+  	}
+  ```
+
++ 其他
+
+  ```mysql
+  -- 查看已有数据库  
+  	SHOW DATABASES;
+  	
+  -- 使用数据库
+  	USE 数据库名;
+  	
+  -- 检索数据库中已有的数据表
+  	SHOW TABLES;
+  	SHOW TABLES[ LIKE 'pattern']
+  	
+  -- 查看当前数据库
+  	SELECT DATABASE();
+  	
+  -- 显示用户名
+  	SELECT user();
+  	
+  -- 显示数据库版本
+  	SELECT version();
+  	
+  -- 修改数据库的选项信息
+  	ALTER DATABASE 库名 选项信息
+  	
+  -- 删除数据库
+  	DROP DATABASE[ IF EXISTS] 数据库名
+  ```
+
+
+
+# 四、数据表操作
+
+## 1. 创建数据表
 
 ```mysql
--- 创建数据库
-	CREATE DATABASE[ IF NOT EXISTS] 数据库名 数据库选项
-    -- 数据库选项
-        [DEFAULT] CHARACTER SET [=] charset_name
-        [DEFAULT] COLLATE [=] collation_name
-        DEFAULT ENCRYPTION [=] {'Y' | 'N'}
--- 查看已有数据库  
-	SHOW DATABASES;
--- 使用数据库
-	USE 数据库名;
--- 检索数据库中已有的数据表
-	SHOW TABLES;
--- 查看当前数据库
-	SELECT DATABASE();
--- 显示用户名
-	SELECT user();
--- 显示数据库版本
-	SELECT version();
--- 修改数据库的选项信息
-	ALTER DATABASE 库名 选项信息
--- 删除数据库
-	DROP DATABASE[ IF EXISTS] 数据库名
-```
+-- 语法格式
+CREATE [TEMPORARY] TABLE [IF NOT EXISTS] tbl_name
+    (create_definition,...)
+    [table_options]
+    [partition_options]
 
-## 5. 数据表操作
+-- TEMPORARY ：临时表，会话结束时表自动消失
 
-### 创建表
-
-```mysql
--- 语法：
-	CREATE [TEMPORARY] TABLE [IF NOT EXISTS] 表名
-    (
-        col_name  数据类型  [NULL | NOT NULL]  [DEFAULT default_value]  [AUTO_INCREMENT], 
-        col_name  ...  ,
-        ...,
-        [PRIMARY KEY(...)]
-    )
-    [表选项]
+-- create_definition中可以定义以下几部分：
+-- 1.列定义
+col_name data_type [NOT NULL | NULL] [DEFAULT default_value] [AUTO_INCREMENT] [UNIQUE [KEY]] [[PRIMARY] KEY]
+-- 2.索引定义
+KEY [index_name] [index_type] (key_part,...)
+      [index_option] ...
+      -- index_type: USING {BTREE | HASH}
+      -- key_part: col_name
+-- 3.主键定义
+PRIMARY KEY [index_type] (key_part,...)
+-- 4.外键定义
+FOREIGN KEY [index_name] (col_name,...) reference_definition
+	-- reference_definition 定义如下：
+	REFERENCES tbl_name (key_part,...)
+      [MATCH FULL | MATCH PARTIAL | MATCH SIMPLE]
+      [ON DELETE RESTRICT | CASCADE | SET NULL | NO ACTION | SET DEFAULT]
+      [ON UPDATE reference_option]
+    -- reference_option
+    RESTRICT | CASCADE | SET NULL | NO ACTION | SET DEFAULT
     
-    -- 使用注意事项：
-        TEMPORARY ：临时表，会话结束时表自动消失
-        AUTO_INCREMENT：每个表只允许一个AUTO_INCREMENT列，而且它必须被索引
-    -- 表选项
-        -- 字符集
-            CHARSET = charset_name
-            如果表没有设定，则使用数据库字符集
-        -- 存储引擎
-            ENGINE = engine_name
-            -- 显示存储引擎的状态信息       
-            SHOW ENGINES
-            -- 显示存储引擎的日志或状态信息
-            SHOW ENGINE 引擎名 {LOGS|STATUS}
-        -- 自增起始数
-            AUTO_INCREMENT = 行数
-        -- 数据文件目录
-            DATA DIRECTORY = '目录'
-        -- 索引文件目录
-            INDEX DIRECTORY = '目录'
-        -- 表注释
-            COMMENT = 'string'
-        -- 分区选项
-            PARTITION BY ... 
-    -- 示例：   
-    CREATE TABLE `templet` (
-        `No.` mediumint(9) NOT NULL AUTO_INCREMENT,
-        `Name` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-        `Age` int(5) DEFAULT NULL,
-        PRIMARY KEY (`No.`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 STATS_AUTO_RECALC=1;
+-- table_options可以定义如下部分：
+ENGINE [=] engine_name
+[DEFAULT] CHARACTER SET [=] charset_name
 ```
 
-### 复制表(创建表的另一种形式)
+> 创建表示例：
+>
+> ```mysql
+> CREATE TABLE `customer` (
+>   `customer_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+>   `store_id` tinyint(3) unsigned NOT NULL,
+>   `first_name` varchar(45) NOT NULL,
+>   `last_name` varchar(45) NOT NULL,
+>   `email` varchar(50) DEFAULT NULL,
+>   `address_id` smallint(5) unsigned DEFAULT NULL,
+>   `active` tinyint(1) DEFAULT '1',
+>   `create_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+>   `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+>   PRIMARY KEY (`customer_id`),
+>   KEY `idx_fk_store_id` (`store_id`),
+>   KEY `idx_fk_address_id` (`address_id`),
+>   KEY `idx_last_name` (`last_name`),
+>   CONSTRAINT `fk_customer_address` FOREIGN KEY (`address_id`) REFERENCES `address` (`address_id`) ON UPDATE CASCADE,
+>   CONSTRAINT `fk_customer_store` FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`) ON UPDATE CASCADE
+> ) ENGINE=InnoDB AUTO_INCREMENT=635 DEFAULT CHARSET=utf8mb4;
+> ```
+
+## 2. 复制表（创建表的另一种形式）
+
++ 场景一：复制表结构及其数据到新表
+
+  ```mysql
+  CREATE TABLE new_table AS SELECT * FROM old_table;
+  -- 注：这种方式只是依据查询结果新建表，所以复制的新表没有主键、索引等信息。
+  ```
+
++ 场景二：只复制表结构到新表
+
+  ```mysql
+  -- 方式一：使用LIKE关键字，这种方法会将主键、索引等信息一直复制
+  CREATE TABLE [IF NOT EXISTS] new_table LIKE old_table;
+  
+  -- 方式二：不复制主键、索引等系信息
+  CREATE TABLE new_table as SELECT * FROM old_table WHERE 1=2;
+  ```
+
+## 3. 删除表
 
 ```mysql
--- 只复制表结构
-	-- 方式1：不会复制主键类型，索引等信息
-	CREATE TABLE 新表 SELECT * FROM 旧表 WHERE 1=2;
-	-- 方式2：全部复制
-	CREATE TABLE 新表 LIKE 旧表;
--- 复制表结构和数据
-	CREATE TABLE 新表 [AS] SELECT * FROM 旧表;
-	注：其实只是把select语句的结果建一个表，所以新表不会有主键，索引；
--- 只复制表数据
-	-- 两个表结构一样
-	INSERT INTO 新表 SELECT * FROM 旧表;
-	-- 两个表结构不一样
-	INSERT INTO 新表(column1,column2...) SELECT column1,column2... FROM 旧表;	
+-- 删除一个或多个表
+DROP TABLE [IF EXISTS] tbl_name [, tbl_name] 
 ```
 
-### 检索数据库中数据表
+## 4. 清空表
 
 ```mysql
-SHOW TABLES[ LIKE 'pattern']
-SHOW TABLES FROM  库名
+TRUNCATE [TABLE] tbl_name
 ```
 
-### 查看表结构
+## 5. 查看表结构
 
 ```mysql
--- 方式1：以SQL语句的形式呈现
+-- 方式一：以SQL语句的形式呈现
 	SHOW CREATE TABLE 表名
--- 方式2：以表格的形式呈现
+	
+-- 方式二：以表格的形式呈现
 	DESC|DESCRIBE|EXPLAIN 表名
 	SHOW COLUMNS FROM 表名
 ```
 
-### 修改表结构（ALTER）
+## 6. 修改表结构（ALTER）
 
 ```mysql
--- 语法格式：
-	ALTER TABLE 表名 [修改选项]
-	
-	常见的修改选项：
-	-- 修改表名
-		RENAME TO <新表名>
-	-- 修改字段数据类型
-		MODIFY COLUMN <列名> <类型>
-	-- 修改字段名
-		CHANGE COLUMN <旧字段名> <新字段名> <新数据类型>
-		注：如果不需要修改字段的数据类型，可以将新数据类型设置成与原来一样，但数据类型不能为空
-	-- 增加新字段
-		ADD [COLUMN] <新字段名> <数据类型> [约束条件] [FIRST|AFTER 已存在的字段名]；
-		注：默认将新添加的字段设置为数据表的最后列，FIRST 作用是将新添加的字段设置为表的第一个字段；AFTER 作用是将新添加的字段添加到指定的已存在的字段			名的后面；
-	-- 删除字段
-		DROP [COLUMN] <字段名>
-	-- 修改存储引擎
-		engine = myisam;
-	-- 修改字段的相对位置
-		MODIFY 字段名 数据类型 FIRST|AFTER 字段名2
-	-- 创建主键
-		ADD PRIMARY KEY(字段名)
-	-- 删除主键(删除主键前需删除其AUTO_INCREMENT属性)
-		DROP PRIMARY KEY
-	-- 创建外键
-		ADD CONSTRAINT 外键名
-        FOREIGN KEY (字段1 [,...])
-        REFERENCES 主表(字段1 [,...])
-	-- 删除外键约束
-		DROP FOREIGN KEY 键名
+-- 语法格式
+ALTER TABLE tbl_name
+    [alter_option [, alter_option] ...]
 ```
 
-### 删除表
++ 场景一：增加新字段
+
+  ```mysql
+  -- alter_option：
+  ADD [COLUMN] col_name column_definition
+          [FIRST | AFTER col_name]
+  -- 默认将新增字段设置为数据表的最后列，FIRST作用是将新增字段设置为表的第一个字段，AFTER是将新增字段添加到指定字段后面
+  ```
+
++ 场景二：增加新索引
+
+  ```mysql
+  -- alter_option：
+  ADD {INDEX | KEY} [index_name]
+          [index_type] (key_part,...) 
+  -- index_type:
+      USING {BTREE | HASH}
+  -- key_part:
+      col_name [(length)] [ASC | DESC]    
+  ```
+
++ 场景三：创建主键
+
+  ```mysql
+  -- alter_option：
+  ADD PRIMARY KEY [index_type] (key_part,...)
+  ```
+
++ 场景四：新增外键
+
+  ```mysql
+  -- alter_option：
+  ADD FOREIGN KEY
+      [index_name] 
+      (col_name,...)
+      reference_definition
+  ```
+
++ 其他场景
+
+  ```mysql
+  -- 修改表名
+  	RENAME TO new_tbl_name
+  	
+  -- 修改字段数据类型
+  	MODIFY COLUMN col_name column_definition
+  
+  -- 修改字段
+  	CHANGE COLUMN old_col_name new_col_name column_definition
+  ```
+
+## 7. 外键（未修订）
+
+被引用的表称为父表，引用的表称为子表；
+
+与主键约束一起使用，为两个表的数据建立连接，保证两个表中数据的一致性和完整性；
+
+**InnoDB 存储引擎在外键建立时会自动对该列增加一个索引**；
+
+创建外键规则：
+
+- 主表必须已经存在于数据库中，或者是当前正在创建的表。如果是后一种情况，则主表与从表是同一个表，这样的表称为自参照表，这种结构称为自参照完整性；
+- **必须为主表定义主键**；
+- 外键中列的数目必须和主表的主键中列的数目相同；
+
+对于参照完整性约束，外键能起到很好的作用，但导入数据时，外键约束的检查会花费大量时间；可以通过命令在导入数据前关闭外键的检查：
+
+```sql
+SET foreign_key_checks = 0;
+-- 导入数据后再设置为1
+```
+
++ 创建外键
+
+  有两种方式创建外键：一种是创建表时创建外键，另一种是表创建后通过 ALTER TABLE 创建外键；
+
+  ```sql
+  -- 创建表时创建外键
+  [CONSTRAINT 外键名]					-- 为外键约束定义名称,如果省略，MySQL将自动生成一个名称
+  FOREIGN KEY 字段1 [,字段2,...]) 	
+  REFERENCES 主表(字段1 [,...])
+  ON DELETE action	-- 定义当父表中的记录被删除时，子表的记录怎样执行操作。
+  ON UPDATE action	-- 定义当父表中的记录更新时，子表中的记录会怎样执行操作
+  
+  -- 通过 ALTER TABLE 创建外键
+  -- 添加外键约束的前提：从表中外键列中的数据必须与主表中主键列中的数据一致或者是没有数据
+  ALTER TABLE 表名 ADD 
+  CONSTRAINT 外键名
+  FOREIGN KEY (字段1 [,...])
+  REFERENCES 主表(字段1 [,...])
+  ON DELETE action
+  ON UPDATE action
+  ```
+
++ 删除主键
+
+  ```sql
+  ALTER TABLE table_name 
+  DROP FOREIGN KEY 外键名;
+  ```
+
+  
+
+
+
+
+
+
+
+
+
+# 五、数据查询（select）
 
 ```mysql
-DROP TABLE [IF EXISTS] 表名 [, 表2名, ...] 
+-- 语法格式
+SELECT
+	[ALL | DISTINCT | DISTINCTROW ]		-- 默认为ALL,查询全部记录；
+    select_expr [, select_expr ...]
+    [FROM table_references]
+    [WHERE where_condition]
+    [GROUP BY {col_name | expr | position}, ... [WITH ROLLUP]]
+    [HAVING where_condition]
+    [ORDER BY {col_name | expr | position}
+      [ASC | DESC], ... [WITH ROLLUP]]
+    [LIMIT {[offset,] row_count | row_count OFFSET offset}]
 ```
 
-### 清空表数据
+> + `DISTINCT` ：用于查询列中不重复的字段值；
+>   + 如果查询的列具有 NULL 值，将保留一个 NULL 值；
+>   + 不能部分使用 DISTINCT，DISTINCT 关键字应用于全部列而不仅是前置他的列，如 `DISTINCT 字段1,字段2,...` 表示使用多个列的组合确定是否重复；
+>   + 可以将聚合函数（例如 `SUM`、 `AVG`、`COUNT`）和 DISTINCT 配合使用，如：`SELECT COUNT(DISTINCT vend_id) FROM products;`
+> + `select_expr`
+>   + 可以使用 `*` 表示所有字段
+>   + 一个或者多个字段
+>   + 可以使用表达式（计算公式、函数调用）
+>   + 可以使用 `AS` 关键字为每个 `select_expr` 设置别名
+
+## 1. where 子句
+
+where 子句用于设置查询条件。
+
+查询条件可以使用多个操作符组合实现，MySQL 支持以下操作符：
+
++ 比较操作符
+
+  ```mysql
+  =
+  <>或!=	-- 不等号有两种表示方式
+  <
+  <=
+  >
+  >=
+  ```
+
+  注：使用等号操作符匹配字符串时不区分大小写，如 'zhu' 与 'Zhu' 相等。
+
++ 逻辑操作符
+
+  用于连接多个查询条件
+
+  ```mysql
+  ADD
+  OR
+  [NOT] BETWEEN 起始值 AND 终止值	-- 用于查找指定范围内的记录
+  ```
+
+  ```mysql
+  -- 使用BETWEEN查询时间范围
+  SELECT * 
+  FROM 
+  	k_student 
+  WHERE 
+  	create_time  between 
+  	'2022-06-29 00:00:00' and 
+  	'2019-06-29 23:59:59';    
+  ```
+
++ IN 操作符
+
+  用于判断指定的值是否与列表中的某个值匹配。
+
+  ```mysql
+  -- 示例
+  SELECT 
+      officeCode, city, phone, country
+  FROM
+      offices
+  WHERE
+      country IN ('USA' , 'France');
+      
+  -- IN操作符配合子查询一起使用
+  SELECT 
+  	name, sex, age
+  FROM 
+  	students
+  WHERE 
+  	uid IN (SELECT uid FROM user);
+  ```
+
++ LIKE 关键字
+
+  用于匹配字符串；
+
+  匹配规则：
+
+  + `%` ：匹配0个或者多个任意字符
+  +  `_` ：匹配单个字符
+
+  ```mysql
+  -- 示例
+  SELECT 
+  	name, sex, age
+  FROM 
+  	students
+  WHERE 
+  	name LIKE 'Zhu%';
+  ```
+
+  > 注：LIKE 关键字匹配字符时不区分大小写；
+  >
+  > 尽量少使用这种方式进行查询，花费时间比较长。
+
++ 正则表达式
+
+  配合关键字 `REGEXP` 使用；
+
+  ```mysql
+  -- 语法格式
+  WHERE 匹配的列 REGEXP 正则表达式
+  ```
+
+  ```mysql
+  -- 正则表达式书写规则：
+  .		匹配除 "\n" 之外的任意单个字符
+  |		或，满足其中一个即可
+  []		匹配括号内包含的任意单个字符，可以配合^一起使用，如[^123]表示匹配方括号中未包含的任意单个字符
+  [A-Z]	匹配任何大写字母
+  [a-z]	匹配任何小写字母
+  [0-9]	匹配从0到9的任何数字
+  -- 匹配字符类	
+  [:alnum:] 	任意字母和数字（同[a-zA-Z0-9]）
+  [:alpha:] 	任意字符（同[a-zA-Z]）
+  [:blank:] 	空格和制表（同[\\t]）
+  [:cntrl:] 	ASCII控制字符（ASCII 0到31和127）
+  [:digit:] 	任意数字（同[0-9]）
+  [:graph:] 	与[:print:]相同，但不包括空格
+  [:lower:] 	任意小写字母（同[a-z]）
+  [:print:] 	任意可打印字符
+  [:punct:] 	既不在[:alnum:]又不在[:cntrl:]中的任意字符
+  [:space:] 	包括空格在内的任意空白字符（同[\\f\\n\\r\\t\\v]）
+  [:upper:] 	任意大写字母（同[A-Z]）
+  [:xdigit:] 	任意十六进制数字（同[a-fA-F0-9]）
+  -- 匹配多个字符
+  * 		匹配前面的子表达式零次或多次
+  + 		匹配前面的子表达式一次或多次
+  ? 		匹配前面的子表达式零次或一次
+  {n} 	指定匹配的次数
+  {n,} 	指定匹配的次数不少于指定数目
+  {n,m} 	指定匹配的次数的范围（m不超过255）
+  -- 定位符
+  ^		匹配字符串的开始位置
+  $		匹配字符串的结束位置
+  [[:<:]]		匹配单词的开头
+  [[:>:]]		匹配单词的结尾
+  -- 注：如果要匹配上述特殊字符，使用转移字符转义，MySQL使用两个反斜杠\\进行转义
+  ```
+
+  > <span style="color:red;font-weight:bold">LIKE 关键字和 REGEXP 关键字区别：</span>
+  >
+  > + LIKE 将带有通配符的字符串与整个列值进行匹配，整个列值需要匹配带有通配符的字符串才能被检索出来；
+  > + REGEXP 是对列值的子串进行匹配，只要该列值的某一个连续子串匹配该正则表达式就会被检索出来；
+
++ NULL 值检查
+
+  ```mysql
+  IS NOT NULL
+  IS NULL
+  ```
+
+## 2. GROUP BY 子句
+
+根据一个或者多个列将查询数据分为多个逻辑组，以便能对每个组进行聚集计算；
 
 ```mysql
-TRUNCATE [TABLE] 表名
+-- 语法格式
+SELECT 
+	col_name, function(col_name)
+FROM 
+	table_name
+WHERE 
+	col_name operator value
+GROUP BY 
+	col_name;
 ```
 
++ 使用 `WITH ROLLUP`
+
+  使用 `WITH ROLLUP` 关键字，可以实现在分组统计数据基础上再进行相同的统计；
+
+  ```mysql
+  SELECT
+  	country_id,
+  	COUNT( country_id ) as city_count
+  FROM
+  	city 
+  WHERE
+  	country_id BETWEEN 50 
+  	AND 55 
+  GROUP BY
+  	country_id WITH ROLLUP;
+  
+  -- 查询结果
+  +------------+------------+
+  | country_id | city_count |
+  +------------+------------+
+  |         50 |         31 |
+  |         51 |          2 |
+  |         52 |          2 |
+  |         53 |          1 |
+  |         54 |          2 |
+  |         55 |          1 |
+  |       NULL |         39 |
+  +------------+------------+
+  ```
+
+## 3. HAVING 子句
+
+`HAVING` 子句配合 `GROUP BY` 子句一起使用，用来对分组进行过滤。
+
+> `HAVING` 子句与 `WHERE` 子句功能、用法相同，但存在以下几点差异：
+>
+> + WHERE 用于过滤数据行，而 HAVING 用于过滤分组；
+> + WHERE 查询条件中不可以使用聚合函数，而 HAVING 查询条件中可以使用聚合函数；
+> + WHERE 在数据分组前进行过滤，而 HAVING 在数据分组后进行过滤；
+> + **WHERE 根据数据表中的字段直接进行过滤，而 HAVING 是根据前面已经查询出的字段进行过滤**；
+
+```mysql
+-- 示例
+SELECT
+	country_id,
+	COUNT( country_id ) AS city_count 
+FROM
+	city 
+WHERE
+	country_id BETWEEN 50 
+	AND 55 
+GROUP BY
+	country_id 
+HAVING
+	city_count > 10;
+```
+
+## 4. MySQL 子查询
+
+子查询指可以将一个查询语句嵌套在另一个查询语句中，可以进行多层嵌套。
+
+子查询必须放置于括号中。
+
++ 子查询一般出现在 WHERE 子句中
+
+  ```mysql
+  -- 语法格式
+  WHERE <表达式> <操作符> (子查询)
+-- 操作符可以是比较运算符和 IN、NOT IN、EXISTS、NOT EXISTS 等关键字
+  ```
+  
+  ```mysql
+  -- 示例
+  SELECT
+  	city 
+  FROM
+  	city 
+  WHERE
+  	country_id = ( SELECT country_id FROM country WHERE country = 'China' );
+  ```
+  
++ 子查询出现在 FROM 子句中
+
+  将子查询返回的结果集用作临时表，**必须给子查询结果取个别名**；
+
+  ```mysql
+  SELECT
+  	MAX( count ) 
+  FROM
+  	( 
+           SELECT 
+              COUNT( city ) AS count 
+           FROM 
+              city 
+           GROUP BY 
+              country_id 
+      ) AS city_count;
+  ```
+
+> + 子查询的功能也可以通过表联结完成，但是子查询会使 SQL 语句更容易阅读和编写；
+> + 一般来说，表联结（内联结和外联结等）都可以用子查询替换，但反过来却不一定，有的子查询不能用表联结来替换。
+
+## 5. 联结查询（JOIN）
+
+联结查询即联结多个数据表并从中查询数据。
+
+联结查询可以分为如下三类：
+
++ INNER JOIN（内连接，或等值连接）：获取两个表中字段匹配关系的记录；
++ LEFT JOIN（左连接）：获取左表所有记录，即使右表没有对应匹配的记录；
++ RIGHT JOIN（右连接）：与 LEFT JOIN 相反，用于获取右表所有记录，即使左表没有对应匹配的记录。
+
+> MySQL 官方只提供了上述三种联结方式，但是可以通过拓展达到其他联结的效果。
+
+### 1）笛卡尔积：CROSS JOIN
+
+笛卡尔积就是将 A 表的每一条记录与 B 表的每一条记录拼在一起。
+
+如果 A 表有 n 条记录，B 表有 m 条记录，笛卡尔积产生的结果就会产生 n*m 条记录。
+
+笛卡尔积可以通过以下方式实现：
+
+```mysql
+-- 方式一：
+SELECT * FROM tbl_A CROSS JOIN tbl_B;
+
+-- 方式二：
+SELECT * FROM tbl_A INNER JOIN tbl_B;
+```
+
+```mysql
+-- 示例
+mysql> select * from students;
++------------+--------+------+------+----------+
+| student_id | name   | age  | sex  | class_id |
++------------+--------+------+------+----------+
+|          1 | 张三   |   10 | 男   | 1        |
+|          2 | 李四   |    9 | 女   | 2        |
+|          3 | 王五   |   11 | 男   | 3        |
+|          4 | 朱六   |   10 | 女   | 1        |
+|          5 | 马七   |   11 | 男   | 2        |
++------------+--------+------+------+----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from teachers;
++------------+--------------+----------+
+| tecaher_id | teacher_name | class_id |
++------------+--------------+----------+
+|          1 | 牛二         | 1        |
+|          2 | 胡三         | 2        |
+|          3 | 图四         | 4        |
++------------+--------------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select * from students cross join teachers;
++------------+--------+------+------+----------+------------+--------------+----------+
+| student_id | name   | age  | sex  | class_id | tecaher_id | teacher_name | class_id |
++------------+--------+------+------+----------+------------+--------------+----------+
+|          1 | 张三   |   10 | 男   | 1        |          1 | 牛二         | 1        |
+|          1 | 张三   |   10 | 男   | 1        |          2 | 胡三         | 2        |
+|          1 | 张三   |   10 | 男   | 1        |          3 | 图四         | 4        |
+|          2 | 李四   |    9 | 女   | 2        |          1 | 牛二         | 1        |
+|          2 | 李四   |    9 | 女   | 2        |          2 | 胡三         | 2        |
+|          2 | 李四   |    9 | 女   | 2        |          3 | 图四         | 4        |
+|          3 | 王五   |   11 | 男   | 3        |          1 | 牛二         | 1        |
+|          3 | 王五   |   11 | 男   | 3        |          2 | 胡三         | 2        |
+|          3 | 王五   |   11 | 男   | 3        |          3 | 图四         | 4        |
+|          4 | 朱六   |   10 | 女   | 1        |          1 | 牛二         | 1        |
+|          4 | 朱六   |   10 | 女   | 1        |          2 | 胡三         | 2        |
+|          4 | 朱六   |   10 | 女   | 1        |          3 | 图四         | 4        |
+|          5 | 马七   |   11 | 男   | 2        |          1 | 牛二         | 1        |
+|          5 | 马七   |   11 | 男   | 2        |          2 | 胡三         | 2        |
+|          5 | 马七   |   11 | 男   | 2        |          3 | 图四         | 4        |
++------------+--------+------+------+----------+------------+--------------+----------+
+15 rows in set (0.01 sec)
+```
+
+### 2）INNER JOIN（可以省略 INNER，效果一样）
+
+`INNER JOIN` 就是从笛卡尔积中挑出 ON 子句条件成立的记录。
+
+![](image/INNERJOIN.JPG)
+
+```mysql
+-- 示例
+SELECT
+	s.student_id,
+	s.name AS student_name,
+	s.class_id,
+	t.teacher_name 
+FROM
+	students s
+	INNER JOIN teachers t ON s.class_id = t.class_id;
+-- 查询结果如下：
++------------+--------------+----------+--------------+
+| student_id | student_name | class_id | teacher_name |
++------------+--------------+----------+--------------+
+|          1 | 张三         | 1        | 牛二         |
+|          2 | 李四         | 2        | 胡三         |
+|          4 | 朱六         | 1        | 牛二         |
+|          5 | 马七         | 2        | 胡三         |
++------------+--------------+----------+--------------+
+```
+
+### 3）左连接：LEFT JOIN
+
+先从笛卡尔积中挑出ON子句条件成立的记录，然后加上左表中剩余的记录。
+
+![](image/LEFTJOIN.JPG)
+
+```mysql
+SELECT
+	s.student_id,
+	s.NAME AS student_name,
+	s.class_id,
+	t.teacher_name 
+FROM
+	students s
+	LEFT JOIN teachers t ON s.class_id = t.class_id;
+-- 查询结果如下：
++------------+--------------+----------+--------------+
+| student_id | student_name | class_id | teacher_name |
++------------+--------------+----------+--------------+
+|          1 | 张三         | 1        | 牛二         |
+|          4 | 朱六         | 1        | 牛二         |
+|          2 | 李四         | 2        | 胡三         |
+|          5 | 马七         | 2        | 胡三         |
+|          3 | 王五         | 3        | NULL         |
++------------+--------------+----------+--------------+
+```
+
+### 4）右连接：RIGHT JOIN
+
+先从笛卡尔积中挑出ON子句条件成立的记录，然后加上右表中剩余的记录。
+
+![](image/RIGHTJOIN.JPG)
+
+```mysql
+SELECT
+	s.student_id,
+	s.NAME AS student_name,
+	s.class_id,
+	t.teacher_name 
+FROM
+	students s
+	RIGHT JOIN teachers t ON s.class_id = t.class_id;
+-- 查询结果如下：
++------------+--------------+----------+--------------+
+| student_id | student_name | class_id | teacher_name |
++------------+--------------+----------+--------------+
+|          1 | 张三         | 1        | 牛二         |
+|          2 | 李四         | 2        | 胡三         |
+|          4 | 朱六         | 1        | 牛二         |
+|          5 | 马七         | 2        | 胡三         |
+|       NULL | NULL         | NULL     | 图四         |
++------------+--------------+----------+--------------+
+```
+
+### 5）外连接：OUTER JOIN
+
+从笛卡尔积中挑出ON子句条件成立的记录，然后加上左表中剩余的记录，最后加上右表中剩余的记录。
+
+MySQL 不支持 OUTER JOIN ，但可以通过对左连接和右连接的结果做UNION操作来实现。
+
+![](image/OUTERJOIN.JPG)
+
+```mysql
+SELECT
+	s.student_id,
+	s.NAME AS student_name,
+	s.class_id,
+	t.teacher_name 
+FROM
+	students s
+	LEFT JOIN teachers t ON s.class_id = t.class_id 
+UNION
+SELECT
+	s.student_id,
+	s.NAME AS student_name,
+	s.class_id,
+	t.teacher_name 
+FROM
+	students s
+	RIGHT JOIN teachers t ON s.class_id = t.class_id;
+-- 查询结果如下：
++------------+--------------+----------+--------------+
+| student_id | student_name | class_id | teacher_name |
++------------+--------------+----------+--------------+
+|          1 | 张三         | 1        | 牛二         |
+|          4 | 朱六         | 1        | 牛二         |
+|          2 | 李四         | 2        | 胡三         |
+|          5 | 马七         | 2        | 胡三         |
+|          3 | 王五         | 3        | NULL         |
+|       NULL | NULL         | NULL     | 图四         |
++------------+--------------+----------+--------------+
+```
+
+### 6）联结拓展
+
+左表中除去ON子句条件成立的记录后剩下的部分。
+
+![](image/联结拓展1.JPG)
+
+```mysql
+SELECT
+	s.student_id,
+	s.NAME AS student_name,
+	s.class_id,
+	t.teacher_name 
+FROM
+	students s
+	LEFT JOIN teachers t ON s.class_id = t.class_id 
+WHERE
+	t.teacher_name IS NULL;
+-- 查询结果如下：
++------------+--------------+----------+--------------+
+| student_id | student_name | class_id | teacher_name |
++------------+--------------+----------+--------------+
+|          3 | 王五         | 3        | NULL         |
++------------+--------------+----------+--------------+
+```
+
+## 6. 联合查询（UNION）
+
+联合查询用于将多条 SELECT 语句的查询结果合并为单个查询结果集。
+
+```mysql
+-- 语法格式
+SELECT ...
+UNION [ALL | DISTINCT]
+SELECT ...
+```
+
+> 注：
+>
+> + 每个 SELECT 查询语句必须包含相同的列、表达式或者聚集函数；
+> + 列数据类型必须兼容：类型不必完全相同，但必须是DBMS可以隐含地转换的类型；
+> + `ALL` 表示返回所有结果集，包含重复数据；`DISTINCT` 表示删除结果集中重复的数据，默认情况下 UNION 操作符已经删除了重复数据，所以可以省略；
+> + 对组合查询结果排序：在最后一条 SELECT 查询语句后使用 ORDER BY 语句；
+
+```mysql
+SELECT vend_id, prod_id, prod_price
+FROM products
+WHERE prod_price <= 5
+UNION
+SELECT vend_id, prod_id, prod_price
+FROM products
+WHERE vend_id IN (1001, 1002);
+
+-- 完成相同工作的WHERE子句
+SELECT vend_id, prod_id, prod_price
+FROM products
+WHERE prod_price <= 5
+	OR vend_id IN (1001, 1002);
+```
+
+## 7. 计算字段
+
+存储在数据库中的数据一般不是应用程序所需要的格式。为了满足应用程序需要的格式，我们需要将数据库中的数据进行转换、计算或者格式化，这些**经过加工的数据就叫做计算字段**。
+
+计算字段可以看作数据表中新增的一列，但计算字段并不实际存在于数据库表中。
+
+> 注：使用数据库对需要的数据进行转换、计算或格式化再传递给其他程序比在其他程序中完成这些操作要快得多；
+>
+
++ 算术运算
+
+  MySQL支持加减乘除算术运算；
+
++ 拼接字段
+
+  将多个列的值连接到一起构成一个字符串。
+
+  多数DBMS使用` + `或者` ||` 实现拼接，MySQL使用`Concat()`函数来实现。
+
+  `concat(字段1, 字段2, …)`：如果有任何一个字段值为NULL，返回值为NULL；
+
+  `concat_ws(separator, str1, str2, ...)`：使用指定分隔符连接字段值；分隔符可以是一个字符串，也可以是其它参数；如果分隔符为NULL，则结果为NULL。和concat函数不同的是，除了分隔符以外的参数为NULL时结果不为NULL。
+
++ 文本处理函数
+
+  ```mysql
+  Length()		获取字符串字节长度
+  char_length()	获取字符串字符个数
+  Upper()			将串转换为大写
+  Lower()			将串转换为小写
+  Locate(str1,str2)	返回子串str1在字符串str2中的位置 		
+  Left(str,n) 	截取str左边n个字符
+  Right() 		截取str右边n个字符
+  substring(str,index,len)	从str的index位置截取len个字符
+  LTrim(str) 		去掉串左边的空格
+  RTrim(str) 		去掉串右边的空格
+  trim()			去除字符串str两边的空格
+  ```
+
++ 日期和时间函数
+
+  ```mysql
+  CurDate()	返回当前日期	// 2020-10-19
+  CurTime()	返回当前时间	// 14:58:37
+  Now() 		返回当前日期和时间	// 2020-10-19 14:59:22
+  Date()	Time() 返回日期时间的日期和时间
+  Year(date)	Month(date)/MonthName(date) Day(date) 	//获取日期的年、月、日，可以接受日期时间类型的参数
+  Hour(time) 	Minute(time)	Second(time)		// 获取时间的时、分、秒，可以接受日期时间类型的参数
+  weekday(date)/dayname(date)	//获取星期几
+  ```
+
++ 数值处理函数
+
+  ```mysql
+  Abs() 返回一个数的绝对值
+  Mod() 返回除操作的余数
+  Rand() 返回一个随机数
+  Sqrt() 返回一个数的平方根
+  ```
+
++ 聚集函数
+
+  ```java
+  AVG()
+    返回指定列的平均值；
+    只适用于数值列；
+    忽略列值为NULL的行；
+  COUNT()
+    计算行的数目；
+    COUNT(*) 对表中所有行进行计数，不管字段值是空值（NULL）还是非空值。
+    COUNT(column)  忽略NULL值。
+  MAX()
+  MIN()
+  SUM() 
+  `DISTINCT`：可以通过该关键字实现聚集不重复行的功能；
+  
+  eg:`SELECT COUNT(DISTINCT CLASS) FROM test;`
+  ```
 
 
-## 6. insert/delete/update
+
+# 六、insert/delete/update
 
 + 插入
 
@@ -249,7 +991,7 @@ TRUNCATE [TABLE] 表名
 
   
 
-## 7. 视图（MySQL 5）
+# 七、视图（MySQL 5）
 
 1. 什么是视图
 
@@ -294,7 +1036,7 @@ TRUNCATE [TABLE] 表名
 
 
 
-## 8. 触发器（MySQL 5）
+# 八、触发器（MySQL 5）
 
 触发器的作用是在执行 insert、delete 和 update命令之前或之后自动调用 SQL 命令或存储过程；
 
@@ -320,7 +1062,7 @@ TRUNCATE [TABLE] 表名
 	DROP TRIGGER 触发器名;
 ```
 
-### INSERT 触发器
+## INSERT 触发器
 
 在 INSERT触发器中，可引用一个名为NEW的虚拟表，访问被插入的行；
 
@@ -333,7 +1075,7 @@ CREATE TRIGGER neworder AFTER INSERT ON orders FOR EACH ROW SELECT NEW.order_num
 -- 每次执行插入操作后都会将order.num赋值给变量；SELECT @变量 就可以查询变量值
 ```
 
-### DELETE 触发器
+## DELETE 触发器
 
 在DELETE触发器中，可引用一个名为OLD的虚拟表，访问被删除的行；
 
@@ -349,7 +1091,7 @@ END;
 -- 触发器使用BEGIN END 语句标记触发体，可以在触发体中执行多条语句
 ```
 
-### UPDATE 触发器
+## UPDATE 触发器
 
 在UPDATE触发器中，可以引用一个名为OLD的虚拟表访问更新前的值，引用一个名为NEW的虚拟表访问更新后的值；
 
@@ -359,7 +1101,7 @@ OLD中的值全都是只读的，不能更新；
 
 
 
-## 9. 存储过程(MySQL 5)
+# 九、存储过程(MySQL 5)
 
 存储过程：**为了完成特定功能的SQL语句集，经编译后保存在数据库中，用户可通过指定存储过程的名字并给定参数(需要时)来调用执行**；（相当于一个函数）
 
@@ -478,7 +1220,8 @@ OLD中的值全都是只读的，不能更新；
      ```
 
 
-## 10. 游标（MySQL 5）
+
+# 十、游标（MySQL 5）
 
 游标存储了MySQL查询结果集，使用游标可以对MySQL检索得到的数据集逐行进行处理；
 
@@ -538,673 +1281,11 @@ OLD中的值全都是只读的，不能更新；
 
 
 
-# 一、MySQL 数据查询及查询性能优化
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-```mysql
--- 语法格式
-SELECT
-	[ALL | DISTINCT | DISTINCTROW ]		-- 默认为ALL,全部记录；
-    select_expr [, select_expr ...]
-    [FROM table_references
-    [WHERE where_condition]
-    [GROUP BY {col_name | expr | position}, ... [WITH ROLLUP]]
-    [HAVING where_condition]
-    [ORDER BY {col_name | expr | position}
-      [ASC | DESC], ... [WITH ROLLUP]]
-    [LIMIT {[offset,] row_count | row_count OFFSET offset}]
-	
-	-- DISTINCT 表示查询不重复字段数据；
-		如果查询的列具有NULL值，将保留一个NULL值；
-		不能部分使用 DISTINCT, DISTINCT关键字应用于全部列而不仅是前置他的列，如 DISTINCT 字段1,字段2,... 表示使用多个列的组合确定是否重复；
-		可以将聚合函数(例如 SUM， AVG和 COUNT)和 DISTINCT子句配合使用，如：SELECT COUNT(DISTINCT vend_id) FROM products;
-	-- select_expr
-		-- 可以使用 * 表示所有字段
-		-- 一个或者多个字段
-		-- 可以使用表达式（计算公式、函数调用）
-		-- 可以使用 AS 关键字为每个select_expr设置别名
-```
-
-### where子句
-
-指定查询条件；
-
-```sql
--- where子句操作符
-	-- 比较操作符
-		=(注意只有一个等号), <>或!=（不等于）, <, <=, >, >=, BETWEEN AND
-		使用等号操作符匹配字符串时不区分大小写，如’zhu’与’Zhu’、’zHu’等相等;
-		匹配字符串时，需要给字符串加单引号;
-	-- 逻辑操作符
-		AND, OR，用于连接多个条件
-	-- IN操作符
-		IN(值1, 值2, ...)
-        NOT IN（否定之后的条件，可配合 IN,BETWEEN,EXISTS使用）
-	-- 通配符(匹配字符串)
-		%（匹配0个、1个或者多个字符）
-        _（只匹配单个字符）
-        配合 LIKE关键字使用；
-        eg: SELECT name FROM student WHERE name like 'Bob%';
-    -- NULL值检查
-    	IS NULL
-	-- 正则表达式(匹配文本)
-		配合关键字 REGEXP 使用，
-		语法格式：WHERE 匹配的列 REGEXP 正则表达式
-		-- 正则表达式特殊字符：
-        	.	匹配任意字符
-            |	与OR操作符相同
-            []	匹配[]里的任何单一字符,可以配合^使用,如[^123]匹配除1、2、3以外的任何字符
-            -	配合[]使用，匹配范围内的任意一个字符，'[1-9]'表示匹配1到9的数字；
-            匹配字符类	
-            	[:alnum:] 任意字母和数字（同[a-zA-Z0-9]）
-                [:alpha:] 任意字符（同[a-zA-Z]）
-                [:blank:] 空格和制表（同[\\t]）
-                [:cntrl:] ASCII控制字符（ASCII 0到31和127）
-                [:digit:] 任意数字（同[0-9]）
-                [:graph:] 与[:print:]相同，但不包括空格
-                [:lower:] 任意小写字母（同[a-z]）
-                [:print:] 任意可打印字符
-                [:punct:] 既不在[:alnum:]又不在[:cntrl:]中的任意字符
-                [:space:] 包括空格在内的任意空白字符（同[\\f\\n\\r\\t\\v]）
-                [:upper:] 任意大写字母（同[A-Z]）
-                [:xdigit:] 任意十六进制数字（同[a-fA-F0-9]）
-           匹配多个字符
-                * 	0个或多个匹配
-                + 	1个或多个匹配（等于{1,}）
-                ? 	0个或1个匹配（等于{0,1}）
-                {n} 指定数目的匹配
-                {n,} 不少于指定数目的匹配
-                {n,m} 匹配数目的范围（m不超过255）
-          定位符
-          		^ 文本的开始
-                $ 文本的结尾
-                [[:<:]] 词的开始
-                [[:>:]] 词的结尾
-                匹配上述特殊字符，使用转移字符转义，MySQL使用两个反斜杠\\进行转义；
--- LIKE和 REGEXP 区别：
-	LIKE将带有通配符的字符串与整个列值进行匹配，整个列值需要匹配带有通配符的字符串才能被检索出来；
-	REGEXP是对列值的子串进行匹配，只要该列值的某一个连续子串匹配该正则表达式就会被检索出来；
-```
-
-### GROUP BY 子句
-
-根据一个或多个列将数据分为多个逻辑组，以便能对每个组进行聚集计算；
-
-```mysql
-GROUP BY {col_name | expr | position}, ... [WITH ROLLUP]
-	
-	-- 使用WITH ROLLUP关键字，可以实现在分组统计数据基础上再进行相同的统计
-	eg: SELECT CLASS, COUNT(CLASS) FROM test GROUP BY CLASS;
-```
-
-### HAVING 子句
-
-`HAVING`子句用来对分组或者聚合组指定过滤条件；
-
-通常配合`GROUP BY`子句一起使用，如果省略`GROUP BY`子句，`HAVING`子句的行为与`WHERE`子句类似；
-
-HAVING 子句与 WHERE 子句功能、用法相同，**执行时机不同**：WHERE 子句在数据分组前对记录进行过滤，HAVING 子句在数据分组后对分组进行过滤；
-
-eg：`SELECT CLASS,COUNT(CLASS) AS TOTAL FROM test GROUP BY CLASS HAVING TOTAL>4;`
-
-
-
-
-
-
-
-### 计算字段
-
-存储在数据库中的数据一般不是应用程序所需要的格式。为了满足应用程序需要的格式，我们需要将数据库中的数据进行转换、计算或者格式化，这些**经过加工的数据就叫做计算字段**；
-
-计算字段可以看作数据表中新增的一列，但计算字段并不实际存在于数据库表中。
-
-注：使用数据库对需要的数据进行转换、计算或格式化再传递给其他程序比在其他程序中完成这些操作要快得多；
-
-+ 算术运算
-
-  MySQL支持加减乘除算术运算；
-
-+ 拼接字段
-
-  将多个列的值连接到一起构成一个字符串。
-
-  多数DBMS使用` + `或者` ||` 实现拼接，MySQL使用`Concat()`函数来实现。
-
-  `concat(字段1, 字段2, …)`：如果有任何一个字段值为NULL，返回值为NULL；
-
-  `concat_ws(separator, str1, str2, ...)`：使用指定分隔符连接字段值；分隔符可以是一个字符串，也可以是其它参数；如果分隔符为NULL，则结果为NULL。和concat函数不同的是，除了分隔符以外的参数为NULL时结果不为NULL。
-
-+ 文本处理函数
-
-  ```mysql
-  Length()		获取字符串字节长度
-  char_length()	获取字符串字符个数
-  Upper()			将串转换为大写
-  Lower()			将串转换为小写
-  Locate(str1,str2)	返回子串str1在字符串str2中的位置 		
-  Left(str,n) 	截取str左边n个字符
-  Right() 		截取str右边n个字符
-  substring(str,index,len)	从str的index位置截取len个字符
-  LTrim(str) 		去掉串左边的空格
-  RTrim(str) 		去掉串右边的空格
-  trim()			去除字符串str两边的空格
-  ```
-
-+ 日期和时间函数
-
-  ```mysql
-  CurDate()	返回当前日期	// 2020-10-19
-  CurTime()	返回当前时间	// 14:58:37
-  Now() 		返回当前日期和时间	// 2020-10-19 14:59:22
-  Date()	Time() 返回日期时间的日期和时间
-  Year(date)	Month(date)/MonthName(date) Day(date) 	//获取日期的年、月、日，可以接受日期时间类型的参数
-  Hour(time) 	Minute(time)	Second(time)		// 获取时间的时、分、秒，可以接受日期时间类型的参数
-  weekday(date)/dayname(date)	//获取星期几
-  ```
-
-+ 数值处理函数
-
-  ```mysql
-  Abs() 返回一个数的绝对值
-  Mod() 返回除操作的余数
-  Rand() 返回一个随机数
-  Sqrt() 返回一个数的平方根
-  ```
-
-+ 聚集函数
-
-  ```java
-  AVG()
-    返回指定列的平均值；
-    只适用于数值列；
-    忽略列值为NULL的行；
-  COUNT()
-    计算行的数目；
-    COUNT(*) 对表中所有行进行计数，不管字段值是空值（NULL）还是非空值。
-    COUNT(column)  忽略NULL值。
-  MAX()
-  MIN()
-  SUM() 
-  `DISTINCT`：可以通过该关键字实现聚集不重复行的功能；
-  
-  eg:`SELECT COUNT(DISTINCT CLASS) FROM test;`
-  ```
-
-
-
-select ip,url from test where ip in (select ip from（select ip,count(ip) as num from test group by ip order by num desc limit 3）as count);
-
-
-
-### 子查询
-
-嵌套在其他查询中的查询；
-
-子查询必须位于括号中；
-
-1. 子查询在WHERE子句中
-
-   ```mysql
-   -- 当子查询只返回一个值时，可以使用比较远算符=、<、> 等将子查询返回的单个值和WHERE子句中的表达式进行比较；
-   	SELECT name FROM test WHERE class = (SELECT class FROM test LIMIT 1);
-   -- 当子查询返回一列值时，可以在WHERE子句中使用IN或NOT IN运算符等其他运算符
-   	SELECT name FROM test WHERE class IN (SELECT class FROM test GROUP BY class HAVING COUNT(class) > 4);
-   ```
-
-2. FROM子句中的MySQL子查询
-
-   ```mysql
-   -- 子查询返回的结果集将用作临时表,必须给子查询结果取个别名;
-   	SELECT MAX(num) FROM (SELECT class,COUNT(class) AS num FROM test GROUP BY class) AS class_num;
-   ```
-
-
-
-### 联结表（join）
-
-**联结是数据库查询操作中最重要的操作；**
-
-join 用于联结多个数据表并从中读取数据；
-
-在联结两个表时，**实际上做的是将第一个表中的每一行与第二个表中的每一行配对**，所以检索出的行的数目将是第一个表中的行数乘以第二个表中的行数，所以在使用联结时，联结条件很关键；
-
-联结可以为两种：
-
-+ inner join（内部联结，等值联结）
-+ outer join（外部联结：又分为左联结、右联结）
-
-**1）inner join**
-
-基于两个表之间的相等关系；
-
-```mysql
-mysql> select * from students;
-+----+-------+-----+------------+
-| id | name  | sex | teacher_id |
-+----+-------+-----+------------+
-|  1 | zhu   | 男  |       1111 |
-|  2 | sheng | 女  |       2222 |
-|  3 | wen   | 男  |       3333 |
-|  4 | lou   | 女  |       1111 |
-+----+-------+-----+------------+
-
-mysql> select * from teachers;
-+------+------+
-| id   | name |
-+------+------+
-| 1111 | 张三 |
-| 2222 | 李四 |
-| 4444 | 王五 |
-+------+------+
-
--- 查询 students表与 teachers表 teacher_id字段相同的行中的数据
-mysql> SELECT s.name, t.name 
-FROM students s INNER JOIN teachers t
-ON s.teacher_id = t.id		-- 联结条件用 ON 子句给出
-ORDER BY s.name;
-+-------+------+
-| name  | name |
-+-------+------+
-| lou   | 张三 |
-| sheng | 李四 |
-| zhu   | 张三 |
-+-------+------+
-```
-
-**2）left join**
-
-会读取左边数据表的全部数据，即便右边表无对应数据；
-
-```sql
-mysql> SELECT s.name, t.name 
-FROM students s LEFT OUTER JOIN teachers t 
-ON s.teacher_id = t.id;
-+-------+------+
-| name  | name |
-+-------+------+
-| zhu   | 张三 |
-| lou   | 张三 |
-| sheng | 李四 |
-| wen   | NULL |
-+-------+------+
-```
-
-**3）right join**
-
-会读取右边数据表的全部数据，即便左边表无对应数据；
-
-```SQL
-mysql> SELECT s.name, t.name 
-FROM students s RIGHT OUTER JOIN teachers t 
-ON s.teacher_id = t.id;
-+-------+------+
-| name  | name |
-+-------+------+
-| zhu   | 张三 |
-| sheng | 李四 |
-| lou   | 张三 |
-| NULL  | 王五 |
-+-------+------+
-```
-
-
-
-### 联合查询（UNION）
-
-将多条 select 语句的查询结果合并为单个查询结果集返回；
-
-```mysql
--- 使用UNION，将多条SELECT语句使用UNION关键字连接起来；
-(SELECT ...) UNION (SELECT ...) UNION ...
-
--- 使用 UNION 注意事项：
-	每个SELECT 查询语句必须包含相同的列、表达式或者聚集函数；
-	列数据类型必须兼容：类型不必完全相同，但必须是DBMS可以隐含地转换的类型
-	UNION从查询结果集中自动去除了重复的行，如果不要去除重复行，应该使用 UNION ALLL；
-
--- 对组合查询结果排序
-	在最后一条 SELECT查询语句后使用 ORDER BY 语句；
-```
-
-```mysql
-SELECT vend_id, prod_id, prod_price
-FROM products
-WHERE prod_price <= 5
-UNION
-SELECT vend_id, prod_id, prod_price
-FROM products
-WHERE vend_id IN (1001, 1002);
-
--- 完成相同工作的WHERE子句
-SELECT vend_id, prod_id, prod_price
-FROM products
-WHERE prod_price <= 5
-	OR vend_id IN (1001, 1002);
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# 1. InnoDB 存储引擎
-
-
-
-
-
-## 1.2 InnoDB存储引擎的4大特性（尚未修正）
-
-- 插入缓冲（insert buffer)
-
-  插入缓存并不是内存缓存池的一部分，而是物理页的一部分；
-
-  通常应用程序中行记录的插入顺序是按照主键递增的顺序进行插入的，因此，插入聚集索引一般是顺序的，不需要磁盘的随机读写；
-
-  对于非聚集索引的插入或者更新操作，数据页的存放还是按照主键顺序存放，但是对于非聚集索引叶子节点的插入不是顺序的，这时就需要离散的访问非聚集索引页，随机读取会导致插入性能下降；
-
-  对于非聚集索引的插入或者更新操作，不是每一次直接插入到索引页中，而是先判断插入的非聚集索引页是否在缓冲池中，如在直接插入，若不在，先将其放入到插入缓存中，然后再以一定的频率对插入缓存和非聚集索引叶子节点的合并；
-
-  **通过将多个插入操作合并到一个操作中，可以提高对于非聚集索引插入的性能**；
-
-  Insert Buffer的使用需要同时满足以下两个条件：
-
-  + 索引是辅助索引；
-  + 索引不是唯一索引；
-
-  
-
-- 两次写(double write)
-
-  double write由两部分组成：一部分是内存中的doublewrite buffer，一部分是物理磁盘上共享表空间中连续的128页；
-
-  对缓冲池的脏页进行刷新时，并不直接写磁盘，而是将脏页先复制到内存中的doublewrite buffer（2MB）中，之后通过 doublewrite buffer再分两次，每次 1MB顺序的写入共享表空间的物理磁盘上；
-
-  如果操作系统在将页写入磁盘的过程中崩溃了，在恢复过程中，innodb 存储引擎可以从共享表空间的doublewrite中找到该页的副本，将其复制到表空间文件，再应用重做日志；
-
-  通过缓存从缓冲池中刷新到磁盘的数据页，可以保证数据页的可靠性；
-
-  
-
-- 自适应哈希索引(AHI)
-
-  哈希是一种非常快的查找方法，一般仅需要一次查找就能找到数据；B+树查找次数取决于B+树的高度；
-
-  Innodb存储引擎会监控对表上各索引页的查询，根据访问的频率自动的为某些热点页建立哈希索引；
-
-  
-
-- 预读(read ahead)
-
-  InnoDB使用两种预读算法来提高I/O性能：线性预读（linear read-ahead）和随机预读（randomread-ahead）；
-
-  线性预读着眼于将下一个extent提前读取到buffer pool中，而随机预读着眼于将当前extent中的剩余的page提前读取到buffer pool中；
-
-
-
-
-
-
-
-
-
-
-
-## 1.4 约束
-
-数据库通过约束机制完成对数据的校验，保证数据库中数据的完整性；
-
-常用的约束有 4 种：
-
-+ not null：非空约束，指定某列不为空
-+ unique：唯一约束，指定某列或几列组合的数据不能重复
-+ primary key：主键约束，指定某列的数据不能重复，不能为null；
-
-+ foreign key：外键约束；
-
-
-
-### 1.4.1 外键约束（Foreign Key）
-
-被引用的表称为父表，引用的表称为子表；
-
-与主键约束一起使用，为两个表的数据建立连接，保证两个表中数据的一致性和完整性；
-
-**InnoDB 存储引擎在外键建立时会自动对该列增加一个索引**；
-
-创建外键规则：
-
-- 主表必须已经存在于数据库中，或者是当前正在创建的表。如果是后一种情况，则主表与从表是同一个表，这样的表称为自参照表，这种结构称为自参照完整性；
-- **必须为主表定义主键**；
-- 外键中列的数目必须和主表的主键中列的数目相同；
-
-对于参照完整性约束，外键能起到很好的作用，但导入数据时，外键约束的检查会花费大量时间；可以通过命令在导入数据前关闭外键的检查：
-
-```sql
-SET foreign_key_checks = 0;
--- 导入数据后再设置为1
-```
-
-+ 创建外键
-
-  有两种方式创建外键：一种是创建表时创建外键，另一种是表创建后通过 ALTER TABLE 创建外键；
-
-  ```sql
-  -- 创建表时创建外键
-  [CONSTRAINT 外键名]					-- 为外键约束定义名称,如果省略，MySQL将自动生成一个名称
-  FOREIGN KEY 字段1 [,字段2,...]) 	
-  REFERENCES 主表(字段1 [,...])
-  ON DELETE action	-- 定义当父表中的记录被删除时，子表的记录怎样执行操作。
-  ON UPDATE action	-- 定义当父表中的记录更新时，子表中的记录会怎样执行操作
-  
-  -- 通过 ALTER TABLE 创建外键
-  -- 添加外键约束的前提：从表中外键列中的数据必须与主表中主键列中的数据一致或者是没有数据
-  ALTER TABLE 表名 ADD 
-  CONSTRAINT 外键名
-  FOREIGN KEY (字段1 [,...])
-  REFERENCES 主表(字段1 [,...])
-  ON DELETE action
-  ON UPDATE action
-  ```
-
-+ 删除主键
-
-  ```sql
-  ALTER TABLE table_name 
-  DROP FOREIGN KEY 外键名;
-  ```
-
-  
-
-## 1.4 InnoDB 逻辑存储结构
-
-+ 表空间
-
-  InnoDB 存储引擎中，所有数据都被逻辑地存放在表空间中；
-
-  表空间由段（segment）、区（extent）、页（page）组成；
-
-+ 段
-
-  表空间由各个段组成；
-
-  常见的段有数据段、索引段、回滚段等；
-
-+ 区
-
-  区是由连续页组成的空间；
-
-  任何情况下每个区的大小都为 1MB；
-
-  默认情况下，InnoDB 存储引擎页的大小为 16KB，所有一个区中一共有 64 个连续的页；
-
-+ 页
-
-  **页是 InnoDB 存储引擎管理数据库的最小单位**；
-
-  每页默认大小为 16KB，InnoDB 1.0.x 版本引入压缩页，每个页的大小可以通过参数 `KEY_BLOCK_SIZE` 设置为 2K、4K、8K；InnoDB 1.2.x 版本新增参数 innodb_page_size，通过该参数可以将默认页的大小设置为4K、8K；
-
-+ 行
-
-  页中的数据是按行进行存放；
-
-  MySQL 目前存在四种行记录格式：Redundant、Compact、Dynamic 和 Compressed；
-
-  > 其中 Redundant 为了兼容之前版本而保留；
-  >
-  > MySQL 5.1 开始，默认的行记录格式为 Compact；
-  >
-  > MySQL 5.7 开始，默认的行记录格式为 Dynamic；
-
-  ```sql
-  -- 通过如下命令查看当前表使用的行格式，其中 row_format 属性表示当前表所使用的行记录格式
-  SHOW TABLE STATUS LIKE '表名';
-  ```
-
-
-
-### 1.4.1 行记录格式
-
-+ Compact 行记录格式
-
-  设计目的是为了高效的存储数据，一个页中存放的行数据越多，其性能就越高；
-
-+ Redundant 行记录格式
-
-  MySQL 5.0 版本之前 InnoDB存储引擎的行记录存储方式；
-
-+ 行溢出数据
-
-  行记录占用的空间大小最多为 65535 字节；
-
-  默认每页的大小为 16KB（16384 字节），每页至少需要存储 2 行记录；
-
-  **InnoDB 存储引擎会将占用存储空间非常大的列拆开，在当前列中只存储该列的前 768 个字节的数据和一个指向溢出页（Uncompressed BLOB Page 类型）的地址；**
-
-+ Compressed 和 Dynamic 行记录格式
-
-  InnoDB 1.0.x 版本引入了新的文件格式，之前支持的 Compact 和 Redundant 行记录格式称为 Antelope 文件格式，新的文件格式称为 Barracuda 文件格式，该文件格式下拥有两种新的行记录格式：Compressed 和 Dynamic；
-
-  **新的两种行记录格式对于存放在BLOB 中的数据采用完全的行溢出格式**，**在数据页中只存放20个字节的指针**；Compressed 行记录格式可以对存储在其中的行数据以zlib算法进行压缩，对于BLOB、TEXT、VARCHAR大长度类型的数据能够进行非常有效的存储；
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# 数据库优化
-
-## 大表数据优化
-
-+ **字段优化**
-
-  优先选择符合存储需要的最小的数据类型；
-
-  将字符串转换为数值类型存储；（如将 IP 地址转换为数值类型存储）
-
-  时间使用 TimeStamp 存储而非字符串；
-
-  尽可能的把所有列定义为 not null；（很难查询优化且占用额外索引空间）
-
-  避免使用 Text、BLOB 数据类型；
-
-+ **索引优化**
-
-  选择合适的字段作为索引：频繁作为where、order by后的字段；
-
-  > 不适合创建索引的字段：更新频繁的字段；不能有效区分数据的列（如性别：男女）；
-
-  对于字符串列建立索引，使用前缀索引；
-
-  避免索引冗余；
-
-  > 冗余索引指的是索引的功能相同，如索引（a,b) 和索引（a）这两个索引就是冗余索引
-
-  尽量不使用外键：
-
-+ **查询 SQL 优化**
-
-  开启慢查询日志来找出执行速度较慢的SQL；
-
-  通过 explain 命令获取查询语句是如何运行的：
-
-  > 通过EXPLAIN 可以得到：查询使用了哪些索引，可以使用哪些索引，有多少行被查询等信息；
-
-+ **主从复制或者读写分离**
-
-+ **使用缓冲，比如 Redis**
-
-+ **分库分表、冷热数据分离**
-
-
-
-
-
-
-
-## 插入优化
-
-+ 批量插入，一条 sql 语句插入多条数据；
-
-  原因：日志量减少了，降低了日志刷盘的数据量和频率；同时也能减少SQL语句解析的次数；
-
-  注：SQL语句有长度限制，mysql5.7的客户端默认是 16M，服务端默认是 4M；
-
-+ 在事务中进行插入
-
-  进行一次 INSERT 操作时，MySQL内部会建立一个事务，在事务内才进行插入操作。通过使用事务可以减少创建事务的消耗，所有插入都在执行后才进行提交操作；
-
-+ 数据按主键有序插入
-
-  数据库插入时，需要维护索引数据；有序的数据插入减少了索引节点的合并和分裂；
 
 
 

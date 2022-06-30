@@ -133,8 +133,6 @@ MySQL 将 TIMESTAMP 值从当前时区转换为 UTC 来存储，然后从 UTC �
 
 **MySQL 支持 TIME、DATETIME、TIMESTAMP类型的值包含<span style="color:red">小数秒</span>，精度可达微妙（6位数），要定义包含小数秒部分的列，使用语法`type_name(fsp)`，其中 fsp 表示小数秒精度，fsp 的取值范围为0~6。**
 
-要定义包含小数秒部分的列，使用语法 `type_name(fsp)` ，其中 type_name 可以是 TIME 、DATETIME 或 TIMESTAMP ，fsp 是小数秒精度（0=<fsp<=6）。
-
 ```mysql
 create table test (t1 timestamp(3), t2 datetime(6));
 ```
