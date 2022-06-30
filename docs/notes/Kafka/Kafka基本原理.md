@@ -7,6 +7,10 @@
     > 微信读书：https://weread.qq.com/web/reader/e9a32a0071848698e9a39b8kc81322c012c81e728d9d180
 
   + 官方文档：https://kafka.apache.org/documentation/
+  
+  + Kafka 问答网站：https://www.orchome.com/kafka/index
+  
+  + 李志涛博客：https://blog.csdn.net/lizhitao/article/details/39499283
 
 
 

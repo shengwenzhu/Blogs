@@ -116,25 +116,26 @@ $ git remote -v
 origin  git@github.com:shengwenzhu/Blogs.git (fetch)
 origin  git@github.com:shengwenzhu/Blogs.git (push)
 # 注：origin表示远程仓库的别名，并且后面显示了该仓库的url
+
+# 列出已经存在的远程仓库，git 默认使用 origin 标识远程仓库
+$ git remote
+
+# 列出远程仓库的详细信息，在别名后面列出URL地址
+$ git remote -v
+$ git remote --verbo
+
+# 添加远程仓库
+$ git remote add <远程仓库的别名> <远程仓库的URL地址>
+
+# 修改远程仓库的别名
+$ git remote rename <原远程仓库的别名> <新的别名>
+
+# 删除指定名称的远程仓库
+$ git remote remove <远程仓库的别名>
+
+# 修改远程仓库的 URL 地址
+$ git remote set-url <远程仓库的别名> <新的远程仓库URL地址>
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # git init
 
@@ -177,10 +178,10 @@ git status -s
 
 # git branch
 
-对分支进行管理
+对分支进行管理：列出、创建或删除分支
 
 ```bash
-# 展示当前所在的本地分支
+# 列出本地的所有分支，当前所在分支以 "*" 标出
 git branch
 # 创建一个本地分支
 git branch newbranchname
@@ -192,13 +193,172 @@ git branch -vv
 git branch -r
 # 删除远程分支
 git push origin --delete 远程分支名
+# 删除指定的本地分支
+$ git branch -d <分支名称>
+# 强制删除指定的本地分支
+$ git branch -D <分支名称>
+```
+
+# git checkout
+
+用于创建、切换分支等；
+
+```bash
+# 切换到已存在的指定分支
+$ git checkout <分支名称>
+
+# 创建并切换到指定的分支，保留所有的提交记录
+# 等同于 "git branch" 和 "git checkout" 两个命令合并
+$ git checkout -b <分支名称>
+
+# 创建并切换到指定的分支，删除所有的提交记录
+$ git checkout --orphan <分支名称>
+
+# 替换掉本地的改动，新增的文件和已经添加到暂存区的内容不受影响
+$ git checkout <文件路径>
+```
+
+# git merge
+
+合并分支；
+
+```bash
+# 把指定的分支合并到当前所在的分支下
+#注：当主分支和新创建的分支没有冲突时，可直接将分支合并；当主分支和新创建的分支存在冲突时，需先把冲突解决掉，再将分支合并到主分支；
+注：如存在文件冲突，可使用 git diff 命令查看文件的差异性
+$ git merge <分支名称>
 ```
 
 
 
 
 
+# git config
 
+**配置 git 的相关参数；**
+
+Git 一共有3个配置文件：配置文件的权重为 **仓库>全局>系统**，Git 首先会查找系统级的配置文件，该文件含有对系统上所有用户及他们所拥有的仓库都生效的配置值；接着 Git 会查找每个用户的全局配置文件，最后查找各个仓库中 Git 目录下的配置文件；
+
+- 系统级配置文件：`/usr/local/etc/gitconfig` 文件
+- 全局配置文件：`~/.gitconfig`
+- 仓库级配置文件：仓库的 `.git/config` 文件；
+
+```
+# 查看配置信息: 命令参数 -list, 简写 -l
+# --local：仓库级，--global：全局级，--system：系统级
+$ git config <--local | --global | --system> -l
+
+# 编辑配置文件：命令参数 -edit，简写 -e，注：git config -e 默认编辑仓库级的配置文件；
+$ git config <--local | --global | --system> -e
+
+# 添加配置项
+$ git config <--local | --global | --system> --add <section.key> <value>
+# 注：section、key、value 三者缺一不可；
+
+# 获取配置项
+$ git config <--local | --global | --system> --get <section.key>
+
+# 删除配置项
+$ git config <--local | --global | --system> --unset <section.key>
+
+# 配置提交记录中的用户信息
+$ git config --global user.name <用户名>
+$ git config --global user.email <邮箱地址>
+
+# 查看当前生效的配置信息
+$ git config -l
+
+# 更改Git缓存区的大小
+# 如果提交的内容较大，默认缓存较小，提交会失败
+# 缓存大小单位：B，例如：524288000（500MB）
+$ git config --global http.postBuffer <缓存大小>
+
+# 调用 git status/git diff 命令时以高亮或彩色方式显示改动状态
+$ git config --global color.ui true
+
+# 配置可以缓存密码，默认缓存时间15分钟
+$ git config --global credential.helper cache
+
+# 配置密码的缓存时间
+# 缓存时间单位：秒
+$ git config --global credential.helper 'cache --timeout=<缓存时间>'
+
+# 配置长期存储密码
+$ git config --global credential.helper store
+```
+
+
+
+# git clone
+
+从远程仓库克隆一个版本库到本地
+
+```
+# 终端输入 git clone 查询 
+用法：git clone [<选项>] [--] <仓库> [<路径>]
+
+经常使用：
+# 默认在当前目录下创建和版本库名相同的文件夹并下载版本到该文件夹下
+$ git clone <远程仓库的网址>
+
+# 指定本地仓库的目录
+$ git clone <远程仓库的网址> <本地目录>
+
+# -b 指定要克隆的分支，默认是master分支
+$ git clone <远程仓库的网址> -b <分支名称> <本地目录>
+```
+
+
+
+# git reset
+
+用于回退版本，可以指定退回某一次提交的版本；
+
+```bash
+git reset [--soft | --mixed | --hard] [HEAD]
+
+usage: git reset [--mixed | --soft | --hard | --merge | --keep] [-q] [<commit>]
+   or: git reset [-q] [<tree-ish>] [--] <pathspec>...
+   or: git reset [-q] [--pathspec-from-file [--pathspec-file-nul]] [<tree-ish>]
+   or: git reset --patch [<tree-ish>] [--] [<pathspec>...]
+
+    -q, --quiet           be quiet, only report errors
+    --mixed               reset HEAD and index
+    --soft                reset only HEAD
+    --hard                reset HEAD, index and working tree
+    --merge               reset HEAD, index and working tree
+    --keep                reset HEAD but keep local changes
+    --recurse-submodules[=<reset>]
+                          control recursive updating of submodules
+    -p, --patch           select hunks interactively
+    -N, --intent-to-add   record only the fact that removed paths will be added later
+    --pathspec-from-file <file>
+                          read pathspec from file
+    --pathspec-file-nul   with --pathspec-from-file, pathspec elements are separated with NUL character
+```
+
+# git stash
+
+适用场景：
+
+- 场景一：当正在 dev 分支上开发某个项目，这时项目中出现一个bug，需要紧急修复，但是正在开发的内容只是完成一半，还不想提交，这时可以用 git stash 命令将修改的内容保存至堆栈区，然后顺利切换到其他分支进行bug修复，修复完成后，再次切回到dev分支，从堆栈中恢复刚刚保存的内容。
+- 场景二：由于疏忽，本应该在 dev 分支开发的内容，却在 master 上进行了开发，需要重新切回到 dev 分支上进行开发，可以用 git stash 将内容保存至堆栈中，切回到 dev 分支后，再次恢复内容即可；
+
+总的来说，git stash 命令的作用就是将目前还不想提交的但是已经修改的内容进行保存至堆栈中，后续可以在某个分支上恢复出堆栈中的内容。这也就是说，**stash 中的内容不仅仅可以恢复到原先开发的分支，也可以恢复到其他任意指定的分支上**。git stash作用的范围包括工作区和暂存区中的内容，也就是说没有提交的内容都会保存至堆栈中。
+
+```bash
+# 将所有未提交的修改（工作区和暂存区）保存至堆栈中，用于后续恢复
+git stash
+
+# 查看当前 stash 中的内容
+git stash list
+
+# 将当前 stash 中的内容弹出，并应用到当前分支对应的工作目录上，该命令将堆栈中最近保存的内容删除
+git stash pop
+
+# 将堆栈中的内容应用到当前目录，不同于git stash pop，该命令不会将内容从堆栈中删除，也就说该命令能够将堆栈的内容多次应用到工作目录中，适应于多个分支的情况
+git stash apply
+```
 
 
 

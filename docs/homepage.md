@@ -1,7 +1,20 @@
 # Java
 
 + [Java基础](notes/Java/Java基础.md)
-+ [Java类与对象](notes/Java/Java类与对象.md)
++ Java类与对象
+  + [Java类与对象](notes/Java/Java类与对象.md)
+  + [内部类](notes/Java/内部类.md)
+  + [枚举类](notes/Java/枚举类.md)
+  + [对象序列化](notes/Java/对象序列化.md)
++ [集合](notes/Java/Java集合.md)
++ Java8 新增的 stream 库
++ 泛型
++ [异常捕获与处理](notes/Java/异常捕获与处理.md)
++ [反射](notes/Java/反射.md)
++ Java 常用类
+  + [String、StringBuffer、StringBuilder](notes/Java/常用类与接口/String.md)
+  + [Object类](notes/Java/常用类与接口/Object类.md)
+  + [包装类](notes/Java/常用类与接口/包装类.md)
 
 
 
@@ -81,6 +94,12 @@
 
 # Spring
 
+> + 学习资料：
+>   + 官方文档：https://docs.spring.io/spring-framework/docs/current/reference/html/index.html
+>   + 《Spring实战》第四版：电子版地址：https://potoyang.gitbook.io/spring-in-action-v4/
+
++ [Spring IoC](notes/Spring/SpringIoC.md)
+
 + [Spring MVC](notes/Spring/SpringMVC.md)
 
 + SpringBoot
@@ -89,14 +108,31 @@
 
 
 
+# 设计模式
+
+
+
 # 系统架构
 
 > 随着手机、平板电脑等移动终端的广泛应用，现如今己经是移动互联网的时代。移动互联网的特点是面向大众，相对而言业务比较简单，但是网站往往拥有大量的用户，面对的问题主要是大数据、高并发、高性能问题。
->
+
+
+
+# 计算机基础
+
+## 操作系统
+
++ [操作系统](notes/操作系统/操作系统.md)
+
+## 计算机网络
+
++ [计算机网络](notes/计算机网络/计算机网络.md)
 
 
 
 # 算法
+
++ [数组排序](notes/算法/数组排序.md)
 
 + [图算法](notes/算法/图算法.md)
 + 其他算法
@@ -125,4 +161,6 @@
 # 构建项目工具
 
 ## Maven
+
++ [Maven](notes/Maven/Maven.md)
 
