@@ -23,6 +23,23 @@
 
 
 
+# Redis
+
+> 源码版本：redis-6.2.5
+
++ [Redis底层数据结构](notes/Redis/Redis底层数据结构.md)
+
++ [Redis数据类型](notes/Redis/Redis数据类型.md)
+
++ [Redis数据持久化](notes/Redis/Redis数据持久化.md)
+
++ [Redis单线程架构](notes/Redis/Redis单线程架构.md)
++ [Redis集群](notes/Redis/Redis集群.md)
++ [Redis缓存设计](notes/Redis/Redis缓存设计.md)
++ [其他](notes/Redis/杂七杂八.md)
+
+
+
 # MyBatis
 
 + [MyBatis 原理](notes/MyBatis/MyBatis原理.md)
