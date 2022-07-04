@@ -129,6 +129,15 @@
 
 ## [10] Kafka
 
+> + 学习资料
+>   + [《深入理解Kafka：核心设计与实践原理》](https://weread.qq.com/web/reader/e9a32a0071848698e9a39b8kc81322c012c81e728d9d180)
+>   + [官方文档](https://kafka.apache.org/documentation/)
+>   + [Kafka 问答网站](https://www.orchome.com/kafka/index)
+
+
+
+
+
 
 
 # 【二】计算机基础
