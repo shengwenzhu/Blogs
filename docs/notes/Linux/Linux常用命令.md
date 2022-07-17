@@ -390,6 +390,83 @@ $ cat file...
 > When I see you again
 > ```
 
+## grep：查询与模式匹配的行
+
+grep：global regular expression print，在文本文件中搜索与指定的正则表达式匹配的文本，将包含匹配项的文本行输出到标准输出。
+
+```shell
+Usage: grep [OPTION]... PATTERN [FILE]...
+Search for PATTERN in each FILE.
+Example: grep -i 'hello world' menu.h main.c
+
+# 常用选项：
+-i, --ignore-case         忽略字母大小写（默认区分大小写）
+-v		正常情况下，grep会输出与正则表达式匹配的文本行，该选项输出没有匹配的文本行
+-c		输出匹配的数量，不再输出文本行
+-l		输出包含匹配项的文件名，不再输出文本行
+-n		在包含匹配项的文本行之前加上行号
+```
+
+### 正则表达式
+
+
+
+
+
+
+
+利用通配符，可以构建出复杂的文件名匹配条件。
+
+常用的通配符及其含义如下所示：
+
+| 通配符        | 含义                                         |
+| ------------- | -------------------------------------------- |
+| *             | 匹配任意多个字符                             |
+| ？            | 匹配任意单个字符                             |
+| [characters]  | 匹配字符集合characters中的任意单个字符       |
+| [!characters] | 匹配不属于字符集合characters中的任意单个字符 |
+| [[:class:]]   | 匹配字符类class中的任意单个字符              |
+
+> 不能匹配以点号开头的文件（即隐藏文件），如果想匹配此类文件，可以使用模式`.[!.]`
+
+常用的字符类及其含义如下所示：
+
+| 字符类    | 含义                     |
+| --------- | ------------------------ |
+| [:alnum:] | 匹配任意单个字母数字字符 |
+| [:alpha:] | 匹配任意单个字母         |
+| [:digit:] | 匹配任意单个数字         |
+| [:lower:] | 匹配任意单个小写字母     |
+| [:upper:] | 匹配任意单个大写字母     |
+
+
+
+
+
+## head：输出文件的开头部分
+
+```shell
+Usage: head [OPTION]... [FILE]...
+
+# 常用选项：
+-n		指定打印的行数（默认打印10行）
+```
+
+## tail：输出文件的结尾部分
+
+```shell
+Usage: tail [OPTION]... [FILE]...
+Print the last 10 lines of each FILE to standard output.
+
+# 常用选项：
+-f		实时查看文件
+-n		指定打印的行数
+```
+
+
+
+# 六、文件编辑
+
 ## Vi/Vim：文本编辑器
 
 > VIM ：Vi IMproved  的缩写
@@ -492,25 +569,97 @@ $ cat file...
 
 
 
-# 六、进程
+# 七、进程
 
-## ps
+每个进程都被分配了一个进程 ID（Process ID, PID）。
 
-查看进程，确定哪些进程正在运行和运行的状态、进程是否结束、进程有没有僵尸、哪些进程占用了过多的资源等；
+## ps：查看进程
 
-**ps 命令工具显示的是进程的瞬间状态**，并不是动态连续显示，如果想对进程状态进行实时监控应该用 top 命令；
+> ps 命令显示的是运行 ps 时刻系统内进程的快照，没有动态显示的功能
 
 ```bash
-ps -ef|grep idea
--e：显示系统内所有进程的信息，与 -A 选项功能相同
--f：使用完整 (full) 的格式显示进程信息，如果只有 ps -e 则输出进程信息的格式和只使用 ps 一样（都只有PID TTY TIME CMD这几项，但是输出信息的内容和ps的不一样）
+Description: ps - report a snapshot of the current processes.
+Usage: ps [options]
 
-ps ax
+# 常用的两组选项组合如下：
+	ps -ef
+	ps aux (没有前置连字符，与-ef不同的是，该选项组合的作用：To see every process on the system using BSD syntax)
+
+# 常用选项
+-e		显示所有的进程，与 -A 选项功能相同
+-f		输出格式控制，使用完整的格式显示进程信息
 ```
 
+```bash
+[shengwen@localhost ~]$ ps -ef | grep ps
+UID         PID   PPID  C STIME TTY          TIME CMD
+root       1199      1  0 Jul16 ?        00:00:00 /usr/sbin/cupsd -l
+shengwen   2981   2503  0 Jul16 tty2     00:00:02 /usr/libexec/tracker-miner-apps
+shengwen   6726   3160  0 04:45 pts/0    00:00:00 ps -ef
+shengwen   6727   3160  0 04:45 pts/0    00:00:00 grep --color=auto ps
+```
+
+```bash
+[shengwen@localhost ~]$ ps aux | grep ps
+USER        PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root       1199  0.0  0.2 133560  9936 ?        Ss   Jul16   0:00 /usr/sbin/cupsd -l
+shengwen   2981  0.0  0.6 769848 25696 tty2     SNl+ Jul16   0:02 /usr/libexec/tracker-miner-apps
+shengwen   6664  0.0  0.0  57184  3820 pts/0    R+   04:40   0:00 ps aux
+shengwen   6665  0.0  0.0  12108  1068 pts/0    R+   04:40   0:00 grep --color=auto ps
+
+# 输出信息解释：
+USER	用户ID，该进程的属主
+%CPU	CPU占用率
+%MEM	内存占用率
+VSZ		虚拟内存大小
+RSS		占用的RAM大小
+START	进程启动时间
+```
+
+## top：动态查看进程
+
+top 命令可以动态更新系统进程的信息。
+
+top 命令的输出结果分为两部分：上部分显示系统的总体状态信息，下部分显示按CPU活动排序的进程列表。
+
+```shell
+[shengwen@localhost ~]$ top
+top - 04:49:23 up  5:45,  1 user,  load average: 0.00, 0.03, 0.02
+Tasks: 261 total,   1 running, 260 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  1.4 us,  2.9 sy,  0.0 ni, 94.2 id,  0.0 wa,  1.4 hi,  0.2 si,  0.0 st
+MiB Mem :   3757.6 total,   1918.3 free,   1136.7 used,    702.5 buff/cache
+MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   2370.9 avail Mem 
+
+   PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND   
+  2580 shengwen  20   0 3129176 267424 109472 S   9.0   7.0   2:32.65 gnome-sh+ 
+  3155 shengwen  20   0  531184  42116  30444 S   2.0   1.1   0:23.35 gnome-te+ 
+  2752 root      20   0  204224  32100  10200 S   0.3   0.8   0:51.83 sssd_kcm  
+  2978 shengwen  20   0  569824  40240  33240 S   0.3   1.0   0:35.66 vmtoolsd  
+  3995 root      20   0       0      0      0 I   0.3   0.0   0:00.53 kworker/+ 
+  6346 root      20   0       0      0      0 I   0.3   0.0   0:00.22 kworker/+ 
+  6785 shengwen  20   0   64012   4944   4080 R   0.3   0.1   0:00.26 top       
+     1 root      20   0  179356  14036   9152 S   0.0   0.4   0:05.90 systemd   
+     2 root      20   0       0      0      0 S   0.0   0.0   0:00.02 kthreadd  
+     3 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_gp    
+     4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_par_+ 
+     6 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/+ 
+```
+
+![](image/top命令输出信息解释.png)
+
+top 命令可以搭配键盘使用，常用的键盘命令如下：
+
++ **按进程的CPU使用率排序**
+
+  打开大写键盘的情况下，直接按P键；未打开大写键盘的情况下，Shift+P键
+
++ **按照内存使用率排序**
+
+  打开大写键盘的情况下，直接按M键，打开大写键盘的情况下，直接按M键
 
 
-# 七、权限
+
+# 八、权限
 
 普通用户切换到 root 用户：
 
@@ -526,35 +675,23 @@ root 用户切换到普通用户：
 
 
 
-# 通配符
+# 其他
 
-利用通配符，可以构建出复杂的文件名匹配条件。
+## 1. 管道操作符
 
-常用的通配符及其含义如下所示：
+`|` ：将一个命令的标准输出传给另一个命令的标准输入
 
-| 通配符        | 含义                                         |
-| ------------- | -------------------------------------------- |
-| *             | 匹配任意多个字符                             |
-| ？            | 匹配任意单个字符                             |
-| [characters]  | 匹配字符集合characters中的任意单个字符       |
-| [!characters] | 匹配不属于字符集合characters中的任意单个字符 |
-| [[:class:]]   | 匹配字符类class中的任意单个字符              |
+```bash
+Usage: command_1 | command_2
 
-> 不能匹配以点号开头的文件（即隐藏文件），如果想匹配此类文件，可以使用模式`.[!.]`
-
-常用的字符类及其含义如下所示：
-
-| 字符类    | 含义                     |
-| --------- | ------------------------ |
-| [:alnum:] | 匹配任意单个字母数字字符 |
-| [:alpha:] | 匹配任意单个字母         |
-| [:digit:] | 匹配任意单个数字         |
-| [:lower:] | 匹配任意单个小写字母     |
-| [:upper:] | 匹配任意单个大写字母     |
-
-
-
-
+Example:
+[shengwen@localhost ~]$ ls
+Desktop  Documents  Downloads  Music  Pictures  Public  Templates  test  Videos
+[shengwen@localhost ~]$ ls | grep 'D'
+Desktop
+Documents
+Downloads
+```
 
 
 

@@ -1,31 +1,109 @@
-# Windows 安装 Kafka
+# Linux 安装 Kafka
 
-第一步：安装 Zookeeper
+## 第一步：安装 Zookeeper（必要组件）
 
-第二步：安装 Kafka
+> 安装版本：`apache-zookeeper-3.8.0-bin`
 
-第三步：测试
++ 添加系统变量：
 
-1. 运行 Zookeeper：打开 cmd 输入命令 `zkServer`；（测试过程中不能关闭该 cmd 窗口）
+  ```
+  ZOOKEEPER_HOME		D:\zookeeper\apache-zookeeper-3.8.0-bin
+  Path				%ZOOKEEPER_HOME%\bin
+  ```
 
-2. 运行 Kafka：在 `D:\kafka\kafka_2.13-3.1.0` 目录下打开一个 cmd 窗口，输入命令：（测试过程中不能关闭该 cmd 窗口）
++ 修该配置文件
 
-   ```bash
-   start bin\windows\kafka-server-start.bat config\server.properties
-   ```
+  进入安装目录，进入 conf 目录，将 `zoo_sample.cfg` 文件修改为 `zoo.cfg`，然后修改 `zoo.cfg` 配置文件。
 
-3. 创建 topic：在 `D:\kafka\kafka_2.13-3.1.0`  目录下重新打开一个 cmd 窗口，输入以下命令创建一个topic；
+  ```
+  # zookeeper客户端与服务器之间的心跳时间，默认2000ms
+  tickTime=2000
+  
+  # Follower连接到Leader并同步数据的最大时间
+  initLimit=10
+  
+  # Follower同步Leader的最大时间
+  syncLimit=5
+  
+  # 数据存放路径
+  dataDir=D:/zookeeper/apache-zookeeper-3.8.0-bin/data
+  
+  # 日志路径
+  dataLogDir=D:/zookeeper/apache-zookeeper-3.8.0-bin/log
+  
+  # 客户端连接zookeeper server的端口
+  clientPort=2181
+  ```
 
-   ```bash
-   bin\windows\kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic kafka-test
-   # 输出Created topic kafka-test.表示创建成功
-   
-   # 命令解释：
-   # --topic指定了所要创建主题的名称
-   # --replication-factor 指定了副本因子
-   # --partitions 指定了分区个数
-   # --create是创建主题的动作指令
-   ```
++ 设置 zookeeper 服务区编号
+
+  在上述配置的数据存放路径下，即 datadir，创建 `myid` 文件（没有后缀，重要！！！），然后在该文件里写入服务器编号。
+
++ 启动  Zookeeper 服务
+
+  打开 cmd 输入命令 `zkServer`。
+
+  > 启动 zookeeper 服务时报错：` ZooKeeper audit is disabled.`
+  >
+  > 原因：新版本启动时，zookeeper 新增的审核日志是默认关闭的
+  >
+  > 解决办法：在配置文件 zoo.cfg 新增一行 `audit.enable=true` 即可
+  
+  
+
+## 第二步：安装 Kafka
+
+> 版本：kafka_2.13-3.1.0
+
++ 编辑配置文件
+
+  `D:\kafka\kafka_2.13-3.1.0\config` 目录下的 `server.properties`
+
+  ```
+  # broker的编号，如果集群中有多个broker，每个broker的编号必须唯一
+  broker.id=0
+  
+  # broker对外提供服务的入口地址
+  listeners=PLAINTEXT://localhost:9092
+  
+  # 存放日志文件的路径
+  log.dirs=D:/kafka/kafka_2.13-3.1.0/kafka-logs
+  
+  # zookeeper 集群地址
+  zookeeper.connect=localhost:2181
+  ```
+
++ 启动 kafka 服务
+
+  在 `D:\kafka\kafka_2.13-3.1.0` 目录下执行以下命令：
+
+  ```bash
+  start bin\windows\kafka-server-start.bat config\server.properties
+  ```
+
+  > 判断 kafka 服务是否启动：使用 `jps -l` 命令
+
++ 创建主题
+
+  在 `D:\kafka\kafka_2.13-3.1.0`  目录下输入以下命令创建一个 topic：
+
+  ```bash
+  bin\windows\kafka-topics.bat --create --bootstrap-server localhost:2181 --replication-factor 1 --partitions 1 --topic topic-demo
+  
+  # 输出 Created topic kafka-test. 表示创建成功
+  
+  # 命令解释：
+  # --create	创建主题的动作指令
+  # --replication-factor	副本因子
+  # --partitions 分区个数
+  # --topic	创建主题的名称
+  ```
+
+  
+
+
+
+
 
 4. 查看已创建的topic
 

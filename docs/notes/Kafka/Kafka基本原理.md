@@ -10,17 +10,23 @@
 
 ![kafka体系结构](image/kafka体系结构.PNG)
 
-## 1. 基本术语
+## 1. Producer（生产者）
 
-+ Producer（生产者）：发送消息的一方，负责将消息发送到 Broker；
+Producer 即发送消息的一方，负责将消息发送到 Broker。
+
+
+
+
+
+
+
+
 
 + Consumer（消费者）：接收消息的一方，负责从 Broker 订阅并消费消息；
 
 + Broker（服务器代理节点）：一个独立的 Kafka 服务节点，负责将收到的消息存储到磁盘中；
 
-+ ZooKeeper：负责集群元数据的管理、控制器的选举等操作。
-
-  > ZooKeeper是一个开源的分布式协调服务，分布式应用程序可以基于ZooKeeper实现诸如数据发布/订阅、负载均衡、命名服务、分布式协调/通知、集群管理、Master选举、配置维护等功能。
++ ZooKeeper：对元数据信息进行管理，如集群、broker、主题、分区等。
 
 + 主题（Topic）
 
