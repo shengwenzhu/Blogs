@@ -1,6 +1,6 @@
-# 【一】技术栈
+# [1] 技术栈
 
-## [1] Java
+## 1. Java
 
 + [Java基础](notes/Java/Java基础.md)
 + Java类与对象
@@ -20,7 +20,7 @@
 
 
 
-## [2] MySQL
+## 2. MySQL
 
 > + 学习资料
 >
@@ -38,7 +38,7 @@
 
 
 
-## [3] JVM
+## 3. JVM
 
 + [JAVA内存区域](notes/JVM/JAVA内存区域.md)
 + [HotSpot虚拟机对象](notes/JVM/HotSpot虚拟机对象.md)
@@ -49,7 +49,7 @@
 
 
 
-## [4] 并发编程
+## 4. 并发编程
 
 + [JAVA内存模型](/notes/并发编程/JAVA内存模型.md)
 + [volatile关键字](/notes/并发编程/volatile关键字.md)
@@ -67,7 +67,7 @@
 
 
 
-## [5] Redis
+## 5. Redis
 
 > 源码版本：redis-6.2.5
 
@@ -84,7 +84,7 @@
 
 
 
-## [6] MyBatis
+## 6. MyBatis
 
 + [MyBatis 原理](notes/MyBatis/MyBatis原理.md)
 + [创建 MyBatis 项目（不使用 Spring 框架）](notes/MyBatis/创建MyBatis项目.md)
@@ -94,7 +94,7 @@
 
 
 
-## [7] Spring
+## 7. Spring
 
 > + 学习资料：
 >   + 官方文档：https://docs.spring.io/spring-framework/docs/current/reference/html/index.html
@@ -110,7 +110,7 @@
 
 
 
-## [8] Linux
+## 8. Linux
 
 > + 学习资料
 >   + [《Linux命令行大全》](https://weread.qq.com/web/reader/f5c32ac072287278f5cc0e6kc81322c012c81e728d9d180)
@@ -121,13 +121,13 @@
 
 
 
-## [9] Git
+## 9. Git
 
 + [Git 常用命令](notes/Git/Git常用命令.md)
 
 
 
-## [10] Kafka
+## 10. Kafka
 
 > + 学习资料
 >   + [《深入理解Kafka：核心设计与实践原理》](https://weread.qq.com/web/reader/e9a32a0071848698e9a39b8kc81322c012c81e728d9d180)
@@ -140,19 +140,19 @@
 
 
 
-# 【二】计算机基础
+# [2] 计算机基础
 
-## [1] 操作系统
+## 1. 操作系统
 
 + [操作系统](notes/操作系统/操作系统.md)
 
-## [2] 计算机网络
+## 2. 计算机网络
 
 + [计算机网络](notes/计算机网络/计算机网络.md)
 
 
 
-# 【三】算法与数据结构
+# [3] 算法与数据结构
 
 + [数组排序](notes/算法/数组排序.md)
 
@@ -162,21 +162,21 @@
 
 
 
-# 【四】系统架构
+# [4] 系统架构
 
-> 随着手机、平板电脑等移动终端的广泛应用，现如今己经是移动互联网的时代。移动互联网的特点是面向大众，相对而言业务比较简单，但是网站往往拥有大量的用户，面对的问题主要是大数据、高并发、高性能问题。
+随着手机、平板电脑等移动终端的广泛应用，现如今己经是移动互联网的时代。移动互联网的特点是面向大众，相对而言业务比较简单，但是网站往往拥有大量的用户，面对的问题主要是大数据、高并发、高性能问题。
 
 
 
-# 【五】工具
+# [5] 工具
 
-## [1] IDEA
+## 1. IDEA
 
 + [IDEA 插件使用](notes/IDEA/插件.md)
 
 
 
-## [2] 项目构建工具
+## 2. 项目构建工具
 
 ### Maven
 
@@ -186,7 +186,7 @@
 
 # 其他
 
-[Mac 系统使用](notes/其他/Mac系统使用.md)
+1. [Mac 系统使用](notes/其他/Mac系统使用.md)
 
 
 

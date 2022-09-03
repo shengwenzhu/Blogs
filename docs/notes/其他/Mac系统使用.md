@@ -57,7 +57,6 @@ source ~/.bashrc
 
 # 查看系统有哪些alias配置
 ➜  ~ alias
-# 查看一个单独命令是否设置了
 ```
 
 
