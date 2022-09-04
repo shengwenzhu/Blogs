@@ -170,64 +170,7 @@ git add [file1] [file2] ...
 git status -s
 ```
 
-# git commit
 
-将暂存区中的内容添加到本地仓库中
-
-> 注：每次使用 git commit 命令都会在本地仓库中生成一个 40 位的哈希值，这个哈希值叫作 commit-id，commit-id 在版本回退的时候是非常有用的，它相当于一个快照，通过与`git reset`组合使用。
-
-# git branch
-
-对分支进行管理：列出、创建或删除分支
-
-```bash
-# 列出本地的所有分支，当前所在分支以 "*" 标出
-git branch
-# 创建一个本地分支
-git branch newbranchname
-# 重新命名分支
-git branch -m newname
-# 查看当前分支关联的远程分支
-git branch -vv
-# 查看远程分支
-git branch -r
-# 删除远程分支
-git push origin --delete 远程分支名
-# 删除指定的本地分支
-$ git branch -d <分支名称>
-# 强制删除指定的本地分支
-$ git branch -D <分支名称>
-```
-
-# git checkout
-
-用于创建、切换分支等；
-
-```bash
-# 切换到已存在的指定分支
-$ git checkout <分支名称>
-
-# 创建并切换到指定的分支，保留所有的提交记录
-# 等同于 "git branch" 和 "git checkout" 两个命令合并
-$ git checkout -b <分支名称>
-
-# 创建并切换到指定的分支，删除所有的提交记录
-$ git checkout --orphan <分支名称>
-
-# 替换掉本地的改动，新增的文件和已经添加到暂存区的内容不受影响
-$ git checkout <文件路径>
-```
-
-# git merge
-
-合并分支；
-
-```bash
-# 把指定的分支合并到当前所在的分支下
-#注：当主分支和新创建的分支没有冲突时，可直接将分支合并；当主分支和新创建的分支存在冲突时，需先把冲突解决掉，再将分支合并到主分支；
-注：如存在文件冲突，可使用 git diff 命令查看文件的差异性
-$ git merge <分支名称>
-```
 
 
 

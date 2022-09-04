@@ -123,6 +123,8 @@
 
 ## 9. Git
 
+- [Git 原理](notes/Git/Git原理.md)
+
 + [Git 常用命令](notes/Git/Git常用命令.md)
 
 
@@ -136,7 +138,9 @@
 
 
 
+## 11. 单元测试
 
+- [@RunWith 注解](notes/单元测试/@RunWith注解.md)
 
 
 
@@ -172,7 +176,9 @@
 
 ## 1. IDEA
 
-+ [IDEA 插件使用](notes/IDEA/插件.md)
++ 插件使用
+  + [Maven Helper](notes/IDEA/Maven-Helper.md)
+
 
 
 

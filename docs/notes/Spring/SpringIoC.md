@@ -1,23 +1,22 @@
-# IoC
 
-> 控制反转（Inversion of Control，IoC），控制反转也可称为依赖注入（Dependency Injection，DI）
->
 
-在面向对象的程序开发中，要实现一个功能，一般需要多个类进行协作才能完成。
+首先需要清楚以下两个容易混淆的术语：
 
-按照传统的做法，如果一个对象 A 依赖于另一个对象 B，那么对象 A 就需要在其初始化时或者运行某个方法时主动创建对象 B。每个对象负责管理与自己相互协作的对象（即它所依赖的对象）的引用，这将会导致对象之间的高度耦合。
+- 控制反转（Inversion of Control，IoC）：传统编程中，如果一个对象 A 依赖于另一个对象 B，那么对象 A 就需要在其初始化时或者运行某个方法时主动创建对象 B，每个对象负责管理其所依赖的对象的引用，这将会导致对象之间的高度耦合。<span style="color:red;font-weight:bold;">IoC 的核心思想</span>是通过引入第三方组件（即IoC容器）负责对象实例的创建、管理对象的整个生命周期、管理对象之间的依赖关系，降低对象之间的耦合。
 
-<span style="color:red;font-weight:bold;">IoC 的核心思想：</span>通过引入第三方组件（即IoC容器）负责对象的创建、管理对象的整个生命周期、通过依赖注入的方式建立对象之间的依赖关系。
+- 依赖注入（Dependency Injection，DI）：假如对象 A 依赖于对象 B，由 IoC容器负责创建对象 B 并将对象 B 注入到对象 A 中。
 
-## 1. IoC 容器
+控制反转与依赖注入**本质上是从不同的角度对同一件事情进行了描述**，控制翻转侧重于原理，依赖注入侧重于实现。
 
-**IoC 容器负责创建对象、建立对象之间的依赖关系、管理对象的整个生命周期**。
+# 1. IoC 容器
+
+在 Spring 应用中，**IoC 容器负责创建对象、建立对象之间的依赖关系、管理对象的整个生命周期**。
 
 Spring 自带了多个容器实现，可以将其分为两类：
 
 + BeanFactory
 
-  > org.springframework.beans.factory.BeanFactory
+  类：org.springframework.beans.factory.BeanFactory
 
   最简单的容器接口，提供了基本的依赖注入支持，Spring 中所有的容器都需要实现该接口。
 
@@ -29,7 +28,7 @@ Spring 自带了多个容器实现，可以将其分为两类：
 
 Spring 提供了多种类型的应用上下文：
 
-+ AnnotationConfigApplicationContext ：从Java配置类中加载已被定义的 bean；
++ AnnotationConfigApplicationContext ：从 Java 配置类中加载已被定义的 bean；
 + ClassPathXmlApplicationContext：从类路径下的 XML 配置文件中加载已被定义的 bean；
 + FileSystemXmlApplicationContext：从文件系统下的 XML 配置文件中加载已被定义的 bean，需要提供XML 文件的完整路径。
 
@@ -41,7 +40,7 @@ Spring 提供了多种类型的应用上下文：
 public class StudentConfig {
 
     /**
-     * 声明student bean
+     * 声明 student bean
      */
     @Bean("student")
     public Student createStudent() {
@@ -62,115 +61,192 @@ public void test() {
 }
 ```
 
-## 2. 依赖注入
+# 2. 定义 bean
 
-**Spring通过依赖注入的方式创建对象之间的依赖关系**。
+定义 bean，即告诉 Spring 要创建哪些 bean
 
-依赖注入的过程分两步进行：1）声明bean，即告诉Spring要创建哪些bean；2）装配bean，将具有依赖关系的对象装配在一起。
+## 2.1 @Component 注解
 
-Spring 提供了三种装配 bean 的方式：
+第一步：使用 @Component 注解声明 bean
 
-+ 在 xml 配置文件中显式配置
-+ 在 Java 配置类中显式配置
-+ 自动化装配（优先推荐使用）
+```java
+@Component
+public class StudentService implements UserService {
 
-### 2.1 自动化装配 bean
+    @Override
+    public void message() {
+        System.out.println(UserEnum.Student.getMessage());
+    }
+}
+```
 
-自动化装配bean的过程分为三步进行：
+第二步：扫描 bean，存在两种方式
 
-+ 第一步：声明 bean
+- 方式一：在配置类中使用 @ComponentScan 注解扫描 bean
+- 方式二：在 xml 文件中配置
 
-  使用 `@Component` 注解修饰类，用于告诉 Spring 为这个类创建 bean；
+```java
+// 方式一
+@Configuration
+@ComponentScan("com.example.zsw")
+public class ScriptConfig {
+}
 
-  >  **`@Component` 注解的扩展**
-  >
-  >  当一个注解被`@Component` 注解修饰，然后使用该注解修饰其他类时，Spring也会为这些类创建bean；所以，这些被 `@Component` 注解修饰的注解可以看作是 `@Component` 注解的扩展。
-  >
-  >  在spring中，存在以下几个 `@Component` 注解的扩展：
-  >
-  >  + `@Controller`：标记控制层组件
-  >  + `@Service`：标记业务层组件
-  >  + `@Repository`：标记数据访问组件，即DAO组件
+// 方式二：applicationContext.xml文件中配置
+<context:component-scan base-package="com.example.zsw"/>
+```
+
+第三步：测试
+
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = ScriptConfig.class)
+// @ContextConfiguration(locations = "classpath:applicationContext.xml")
+public class MyTest {
+
+    @Autowired
+    StudentService studentService;
+
+    @Test
+    public void test() {
+        studentService.message();
+    }
+}
+```
+
+### @Component 注解的扩展
+
+当一个注解被`@Component` 注解修饰，然后使用该注解修饰其他类时，Spring也会为这些类创建bean，所以，这些被 `@Component` 注解修饰的注解可以看作是 `@Component` 注解的扩展。
+
+在spring中，存在以下几个 `@Component` 注解的扩展：
+
++ `@Controller`：标记控制层组件
++ `@Service`：标记业务层组件
++ `@Repository`：标记数据访问组件，即DAO组件
+
+### Bean 的名字
+
+Spring 应用上下文中的所有 bean 都会有一个唯一的 name
+
+如果没有显式指定 bean 的 name，默认情况下 Spring 会将类名的第一个字母变为小写后作为 bean 的 name。
+
+可以显式指定bean的name，如 `@Component("studentService")`
+
+### @ComponentScan
+
+声明 bean 后，需要显式配置 Spring 扫描带有 `@Component` 注解的类，并为其创建 bean。
+
+ `@ComponentScan` 注解默认扫描其注解的类所在包以及这个包下的所有子包。
+
+可以通过显式指定 `@ComponentScan` 的 `value` 属性（或 `basePackages` 属性，这两个属性等价）指定需要扫描的包。
+
+```java
+// 设置扫描单个包
+@ComponentScan("com.example.zsw")
+// 设置扫描多个包
+@ComponentScan(value={"com.example.zsw.service", "com.example.zsw.service.config"})
+// 设置扫描的类或接口，进而扫描该类或接口所在的包
+@ComponentScan(basePackageClasses=StudentService.class)
+```
+
+## 2.2 xml 声明
+
+```xml
+<!-- 声明一个最简单的bean：id属性指定bean的名字，class属性指定了bean的类（需要使用全限定类名）-->
+<!-- 当使用如下方式声明bean时，Spring会调用该类的无参构造器创建bean -->
+<bean id="studentService" class="com.example.zsw.service.impl.StudentService"/>
+```
+
+## 2.3 @Bean 注解
+
+在配置类中使用 @Bean 注解声明bean
+
+默认情况下，创建的 bean 的 name 与方法名相同，可以通过显式设置 @Bean 注解的 name 属性指定bean的name，如`@Bean(name="xxx")`
+
+```java
+@Configuration
+public class StudentConfig {
+  
+    @Bean(name = "student")
+    public Student createStudent() {
+        Student student = new Student();
+        return student;
+    }
+}
+```
+
+# 3. 注入 bean
+
+Spring通过依赖注入的方式创建对象之间的依赖关系。
+
+## 3.1 @Autowired 注解
+
+`@Autowired` 注解通过 bean 的类型注入 bean，如果 Spring 上下文中存在多个类型相同的 bean，将会抛出异常。
+
+如果希望按照 bean 的 name 注入 bean，需要配合 @Qualifier 注解使用。
+
+```java
+@Autowired
+@Qualifier("studentService")
+private UserService userService;
+```
+
+默认情况下要求注入的 bean 必须存在，如果允许注入的 bean 不存在，需要设置@Autowired注解的required属性为false，即`@Autowired(required=false)` 。
+
+`@Autowired` 注解可以用于修饰字段、构造器、方法等，相应的，可以将使用 `@Autowired` 注解注入bean的方法分为三种：Field 注入、构造器注入、Setter方法注入。
+
+- Field 注入（虽然这种方式很简单，但是Spring官方不推荐这种方式）
 
   ```java
-  /*
-   * Spring应用上下文中的所有bean都会有一个唯一的name；
-   * 如果没有显式指定bean的name，默认情况下Spring会将类名的第一个字母变为小写后作为bean的name；
-   * 也可以显式指定bean的name，如@Component("newStudent")
-   */
   @Component
-  public class Student {
+  public class StudentService implements UserService {
+  
+      @Autowired
+      WorkService workService;
       
-      private String name;
-      private int age;
-      private char sex;
+      ......
+  }
+  
+  ```
+
+- 构造器注入
+
+  ```java
+  @Component
+  public class StudentService implements UserService {
+  
+      private WorkService workService;
+  
+      @Autowired
+      public StudentService(WorkService workService) {
+          this.workService = workService;
+      }
+    
+      ......
+  }
+  
+  ```
+
+- Setter 方法注入
+
+  ```java
+  @Component
+  public class StudentService implements UserService {
+  
+      private WorkService workService;
+  
+      @Autowired
+      public void setWorkService(WorkService workService) {
+          this.workService = workService;
+      }
+  
       ......
   }
   ```
 
-+ 第二步：启动组件扫描
+### 三种注入方式对比
 
-  声明bean后，需要显式配置Spring扫描带有 `@Component` 注解的类，并为其创建bean。
-
-  使用 `@ComponentScan` 注解启用组件扫描， `@ComponentScan` 注解默认扫描其修饰的类所在包以及这个包下的所有子包。
-
-  可以通过指定 `@ComponentScan` 的 `value` 属性（或 `basePackages` 属性，这两个属性等价）指定需要扫描的包。
-
-  ```java
-  // 设置扫描单个包,如果只需要设置value属性，可以省略“value=”部分
-  @ComponentScan("cn.edu.learn")
-  // 设置扫描多个包
-  @ComponentScan(value={"cn.edu.learn.entity", "cn.edu.learn.config"})
-  // 设置扫描的类或接口，进而扫描该类或接口所在的包
-  @ComponentScan(basePackageClasses={Student.class, StudentConfig.class})
-  ```
-
-+ 第三步：使用 `@Autowired` 或 `@Resource` 注解注入bean
-
-  `@Autowired` 注解可以用于修饰字段、构造器、方法等，相应的，可以将使用 `@Autowired` 注解注入bean的方法分为三种：Field 注入、构造器注入、Setter方法注入。
-
-  + Field 注入（虽然这种方式很简单，但是Spring官方不推荐这种方式）
-
-    ```java
-    public class Teacher {
-        
-        @Autowired
-        private Student student;
-        ......
-    }
-    ```
-
-  + 构造器注入
-
-    ```java
-    public class Teacher {
-    
-        private Student student;
-        
-        @Autowired
-        public Teacher(Student student) {
-            this.student = student;
-        }
-    }
-    ```
-
-  + Setter方法注入
-
-    ```java
-    public class Teacher {
-    
-        private Student student;
-    
-        @Autowired
-        public void setStudent(Student student) {
-            this.student = student;
-        }
-    }
-    ```
-
-三种注入方法对比：
-
-+ 在 Spring 3.x 刚推出的时候，Spring 官方在对比构造器注入和 Setter 注入时，推荐使用 Setter 方法注入
++ 在 Spring 3.x 推出的时候，Spring 官方在对比构造器注入和 Setter 注入时，推荐使用 Setter 方法注入
 
   > 官方解释：
   >
@@ -186,150 +262,23 @@ Spring 提供了三种装配 bean 的方式：
 
 选择构造器注入还是setter方法注入？一般对强依赖使用构造器注入，对可选的依赖使用setter方法注入。
 
-### 2.2 @Autowired与@Resource对比
+## 3.2 @Resource 注解
 
-`@Autowired`注解与`@Resource`都可用于注入bean。
+不同于`@Autowired `是Spring中定义的注解，`@Resource`是 JSR-250 中定义的注解。
 
-`@Autowired`是Spring中定义的注解，`@Resource`是JSR-250中提供的注解，即Java提供的注解。
+@Resource 注解默认按照 bean 的 name 注入 bean。
 
-`@Autowired` 注解按byType的注入策略注入对象，
+## 3.3 xml 注入
 
-`@Resource` 注解默认按byName的注入策略注入对象。
+使用 xml 注入 bean 时，也存在两种注入方式：构造器注入、Setter 方法注入
 
-@Autowired注解按byType的注入策略注入对象，默认情况下要求注入的对象必须存在，如果允许注入的对象不存在，需要设置@Autowired注解的required属性为false，即`@Autowired(required=false)` 。
-
-> 如果想要使用byName的注入策略，可以将@Autowired注解与@Qualifier注解结合使用。
->
-> 如果Spring上下文中存在多个类型相同的bean，使用@Qualifier注解可以指定bean的名字。
-
-@Autowired注解可以用于构造器、方法、参数、字段等。
-
-如果找不到匹配的bean或者找到多个类型相同的bean，Spring都会抛出异常。
-
-```java
-// 用于构造器时，表示将一个CompactDisc类型的bean注入到CDPlayer之中
-@Autowired
-public CDPlayer(CompactDisc cd) {
-    this.cd = cd;
-}
-
-// 用于方法
-@Autowired
-public void setCompactDisc(CompactDisc cd){
-  this.cd = cd;
-}
-```
-
-> 
->
-> 
->
-> 使用@Resource注解时，可以指定两个属性：name和type，Spring会将指定的name属性值解析为待装配对象的名字，将type属性值解析为bean的类型。
->
-> @Resource装配过程：
->
-> + 如果同时指定了name和type，则从Spring上下文中找到唯一匹配的bean进行装配，找不到则抛出异常；
-> + 如果只指定了name，使用byName的注入策略，从上下文中查找名称匹配的bean进行装配，找不到则抛出异常；
-> + 如果指定了type，则使用byType的注入策略，从上下文中找到类型匹配的唯一bean进行装配，找不到或者找到多个，都会抛出异常；
-> + 如果name和type属性都没有指定，则使用byName的注入策略（此时用该注解修饰的字段名查找bean）。如果找不到名称匹配的bean，使用byType的注入策略。
-
-## 2. 通过Java代码装配bean
-
-> 有时候无法使用自动化装配bean：如将第三方库中的组件装配到Spring应用中，此时可以使用Java代码或xml配置文件装配bean；
-
-**第一步**：创建配置类（使用@Configuration 注解修饰类）
-
-**第二步**：在配置类中声明bean
-
-编写一个方法，这个方法创建并返回所需类型的实例，然后给这个方法添加@Bean注解。
-
-@Bean注解用于告诉Spring将该方法返回的对象注册为Spring应用上下文中的bean。
-
-默认情况下，创建的bean的name与方法名相同，可以通过设置@Bean注解的name属性显式指定bean的name，如`@Bean(name="...")`
-
-```java
-@Configuration
-public class StudentConfig {
-    @Bean
-    public Student createStudent() {
-        Student student = new Student();
-        student.setName("zhu");
-        student.setSex('男');
-        return student;
-    }
-}
-```
-
-**第三步**：装配bean
-
-```java
-// 装配方式一：使用@Resource或@Autowired注解
-    @Resource(name = "createStudent")
-    Student student;
-
-// 装配方式二：调用创建bean的方法（不推荐）
-// 特别备注：虽然如下代码中的Student对象看似是通过调用createStudent()方法得到的，但并不是每次调用createStudent()就创建一个新的对象，createStudent()方法由@Bean注解修饰，Spring会拦截所有对该方法的调用，并确保直接返回该方法所创建的bean，所以每次调用该方法都返回同一个对象
-	String name = createStudent().getName();
-
-// 装配方式三：构造器或者setter方法注入
-// 当Spring调用构造器创建Teacher类的bean时，会自动装配一个Student类的bean
-    @Bean
-    public Teacher(Student student) {
-        return new Teacher(student)
-    }
-```
-
-## 3. 通过 XML 装配 bean
-
-最简单的Spring XML 配置如下所示：
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-
-    <!-- 声明一个最简单的bean：id属性指定bean的名字，class属性指定了bean的类（需要使用全限定类名）-->
-    <!-- 当使用如下方式声明bean时，Spring会调用该类的无参构造器创建bean -->
-    <bean id="student" class="cn.edu.learn.entity.Student"/>
-
-</beans>
-```
-
-使用xml配置文件声明bean后，Spring并不会主动加载该配置文件，需要通过@ImportResource注解导入配置文件，进而让配置文件里面的内容生效。
-
-```java
-@SpringBootApplication
-// 导入xml配置文件
-@ImportResource(locations = {"classpath:config/*.xml"})
-public class LearnApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(LearnApplication.class, args);
-    }
-}
-```
-
-### 3.1 使用构造器注入装配bean
-
-```java
-class Teacher {
-    private String name;
-    private Student assistant;
-    private List<Student> students;
-
-    public Teacher(String name, Student assistant, List<Student> students) {
-        this.name = name;
-        this.assistant = assistant;
-        this.students = students;
-    }
-}
-```
+方式一：构造器注入
 
 ```xml
 <bean id="teacher" class="cn.edu.learn.entity.Teacher">
-    <!-- constructor-arg元素的value属性表明将给定的值以字面量的形式注入到构造器之中 -->
+    <!-- value 表示将给定的值以字面量的形式注入到构造器之中 -->
     <constructor-arg value="wen"/>
-    <!-- constructor-arg元素的ref属性用于告诉Spring将一个名为assistant的bean注入到构造器中 -->
+    <!-- ref 表示将一个名为assistant的 bean 注入到构造器中 -->
     <constructor-arg ref="assistant"/>
     <!-- 将集合注入到构造器中 -->
     <constructor-arg>
@@ -341,27 +290,16 @@ class Teacher {
 </bean>
 ```
 
-### 3.2 使用Setter方法注入
-
-```java
-public class Teacher {
-    private String name;
-    private Student assistant;
-    private List<Student> students;
-    
-    /** setter and getter 方法 */
-    ......
-}
-```
+方式二：setter 方法注入
 
 ```xml
 <bean id="teacher" class="cn.edu.learn.entity.Teacher">
-    <!-- property元素的name属性指定了要注入的类属性，此处即通过Teacher类的name属性的setter方法注入，value属性表示以字面量的形式注入 -->
+    <!-- name 指定了要注入的字段，value 属性表示以字面量的形式注入 -->
     <property name="name" value="yu"/>
     <!-- ref属性表示将一个名为student的bean注入 -->
     <property name="student" ref="student"/>
 </bean>
 ```
 
-## 4. 字段注入、构造器注入、Setter方法注入对比
+
 
